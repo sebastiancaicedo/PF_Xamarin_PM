@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PF_Xamarin_PM.SubjectPage">
+
+
+    <ContentPage Title="Students">
+
+        <ContentPage.ToolbarItems>
+            <ToolbarItem Text="+" Clicked="AddNewStudent"></ToolbarItem>
+        </ContentPage.ToolbarItems>
+        
+        <ContentPage.Content>
+            <StackLayout Orientation="Vertical" Padding="15">
+                <Label Text="Estudiantes" FontSize="Large" TextColor="Red"></Label>
+                <ListView x:Name="listviewStudents">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding Name}"></TextCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </ContentPage.Content>
+    </ContentPage>
+
+    <ContentPage Title="Evaluations">
+        
+    </ContentPage>
+
+</TabbedPage>

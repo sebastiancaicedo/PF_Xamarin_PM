@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PF_Xamarin_PM"
+             x:Class="PF_Xamarin_PM.LoginPage">
+
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" Padding="10">
+            <StackLayout Orientation="Vertical" VerticalOptions="StartAndExpand">
+                <Entry x:Name="entryEmail" Placeholder="example@uninorte.edu.co"></Entry>
+                <Entry x:Name="entryPassword" Placeholder="******"></Entry>
+                <Button Text="Sign In" Clicked="LogIn"></Button>
+            </StackLayout>
+            <StackLayout Orientation="Vertical" VerticalOptions="EndAndExpand">
+                <Button Text="Don't have an account?. Register here" Clicked="ShowRegisterPage"></Button>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+
+</ContentPage>
