@@ -16,7 +16,8 @@ namespace PF_Xamarin_PM
 	public partial class SubjectPage : TabbedPage
 	{
         private Subject subjectToShow;
-        public IList<Student> students = new ObservableCollection<Student>();
+        private IList<Student> students = new ObservableCollection<Student>();
+        private IList<Evaluation> evaluations = new ObservableCollection<Evaluation>();
 
         public SubjectPage(Subject subject)
         {
@@ -24,12 +25,14 @@ namespace PF_Xamarin_PM
             Title = subject.Name;
             InitializeComponent();
             listviewStudents.ItemsSource = students;
+            listviewEvaluations.ItemsSource = evaluations;
         }
 
         protected async override void OnAppearing()
         {
             base.OnAppearing();
             await getStudentsAsync(subjectToShow.StudentsKeys);
+            await getEvaluations(subjectToShow.EvaluationsKeys);
         }
 
         public async Task<int> getStudentsAsync(List<string> studentsKeys)
@@ -68,6 +71,39 @@ namespace PF_Xamarin_PM
             return 0;      
         }
 
+        public async Task<int> getEvaluations(List<string> evaluationKeys)
+        {
+            if(subjectToShow.EvaluationsKeys.Count > 0)
+            {
+                try
+                {
+                    evaluations.Clear();
+                    for (int index = 0; index < subjectToShow.EvaluationsKeys.Count; index++)
+                    {
+                        //System.Diagnostics.Debug.WriteLine("STUDENT KEY: " + studentsKeys[index]);
+                        var items = await FirebaseHelper.firebaseDBClient
+                            .Child("evaluations")
+                            .OnceAsync<Evaluation>();
+
+                        foreach (var item in items)
+                        {
+                            if (subjectToShow.EvaluationsKeys[index] == item.Key)
+                            {
+                                Evaluation evaluation = item.Object;
+                                evaluation.SetUid(item.Key);
+                                evaluations.Add(evaluation);
+                            }
+                        }
+
+                    }
+                }catch(Exception ex)
+                {
+                    throw ex;
+                }
+            }
+            return 0;
+        }
+
         public void AddNewStudent(object sender, EventArgs e)
         {
             AddStudentPage page = new AddStudentPage();
@@ -81,6 +117,43 @@ namespace PF_Xamarin_PM
             subjectToShow.AddStudent(student);
             //students.Add(student);
             //subjectToShow.AddStudent(student);
+        }
+
+        public void MakeNewEvaluation(object sender, EventArgs e)
+        {
+            MakeEvaluationPage page = new MakeEvaluationPage(subjectToShow.GetUId(), students);
+            page.FinishActivity += OnFinishEvaluation;
+            Navigation.PushAsync(page);
+        }
+
+        private void OnFinishEvaluation(object sender, ReturnInfo<Evaluation> e)
+        {
+            if (e.Result == ReturnResult.UnCompleted)
+            {
+                subjectToShow.EvaluationsKeys.Add(e.Data.GetUid());
+                subjectToShow.SaveSubjectOnDB();
+                evaluations.Add(e.Data);
+            }
+            else
+                if (e.Result == ReturnResult.Successful)
+            {
+                subjectToShow.EvaluationsKeys.Add(e.Data.GetUid());
+                subjectToShow.SaveSubjectOnDB();
+                evaluations.Add(e.Data);
+            }
+        }
+
+        public void ShowStudentInfo(object sender, ItemTappedEventArgs e)
+        {
+            Student student = e.Item as Student;
+            StudentPage page = new StudentPage(student);
+            Navigation.PushAsync(page);
+            (sender as ListView).SelectedItem = null;
+        }
+
+        public void ShowEvaluationInfo(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

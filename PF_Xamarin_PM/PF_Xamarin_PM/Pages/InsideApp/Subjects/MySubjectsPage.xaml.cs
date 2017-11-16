@@ -46,7 +46,7 @@ namespace PF_Xamarin_PM
                         {
                             //la asignatura pertenece a el profesor
                             Subject subject = item.Object;
-                            subject.SetAuthId(item.Key);
+                            subject.SetUId(item.Key);
                             subjects.Add(subject);
                         }
                     }

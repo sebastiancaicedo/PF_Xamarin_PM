@@ -4,7 +4,7 @@
              x:Class="PF_Xamarin_PM.MySubjectsPage">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="+" Clicked="CreateNewSubject"></ToolbarItem>
+        <ToolbarItem Icon="ic_custom_agregar.png" Clicked="CreateNewSubject"></ToolbarItem>
     </ContentPage.ToolbarItems>
 
     <ContentPage.Content>
@@ -13,7 +13,13 @@
             <ListView ItemsSource="{Binding}" ItemTapped="ShowSubjectInfo">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding Name}"></TextCell>
+                        <ViewCell>
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                <Image Source="ic_custom_asignaturas.png" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+                                <Label Text="{Binding Name}" FontSize="Large" HorizontalOptions="StartAndExpand"
+                                       TextColor="Red" VerticalTextAlignment="Center"></Label>
+                            </StackLayout>
+                        </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Classes\AppSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Classes\Evaluation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Classes\FirebaseHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Classes\IFinishActivity.cs" />
@@ -19,15 +20,24 @@
     <Compile Include="$(MSBuildThisFileDirectory)Classes\Rubric.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Classes\Student.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Classes\Subject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Rubrics\CreateRubricPage.xaml.cs">
+      <DependentUpon>CreateRubricPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Subjects\Evaluations\EvaluationPage.xaml.cs">
+      <DependentUpon>EvaluationPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Subjects\Evaluations\MakeEvaluationPage.xaml.cs">
+      <DependentUpon>MakeEvaluationPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Subjects\Students\AddStudentPage.xaml.cs">
       <DependentUpon>AddStudentPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Subjects\CreateSubjectPage.xaml.cs">
       <DependentUpon>CreateSubjectPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Rubrics\DePrueba.xaml.cs">
-      <DependentUpon>DePrueba.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Pages\InsideApp\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
@@ -59,15 +69,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Rubrics\" />
     <Folder Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Subjects\Students\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Subjects\CreateSubjectPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Rubrics\DePrueba.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
@@ -104,6 +109,24 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Subjects\Students\StudentPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Subjects\Evaluations\MakeEvaluationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Subjects\Evaluations\EvaluationPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Pages\InsideApp\Rubrics\CreateRubricPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

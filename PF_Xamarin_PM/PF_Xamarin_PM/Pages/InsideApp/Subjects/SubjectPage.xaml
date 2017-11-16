@@ -7,16 +7,23 @@
     <ContentPage Title="Students">
 
         <ContentPage.ToolbarItems>
-            <ToolbarItem Text="+" Clicked="AddNewStudent"></ToolbarItem>
+            <ToolbarItem Icon="ic_custom_agregar.png" Clicked="AddNewStudent"></ToolbarItem>
         </ContentPage.ToolbarItems>
         
         <ContentPage.Content>
             <StackLayout Orientation="Vertical" Padding="15">
-                <Label Text="Estudiantes" FontSize="Large" TextColor="Red"></Label>
-                <ListView x:Name="listviewStudents">
+                <ListView x:Name="listviewStudents" ItemTapped="ShowStudentInfo">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <TextCell Text="{Binding Name}"></TextCell>
+                            <ViewCell Height="100">
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                    <Image Source="ic_custom_estudiante.png" VerticalOptions="CenterAndExpand"></Image>
+                                    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand">
+                                        <Label Text="{Binding FullName}" TextColor="Red" FontSize="Medium"></Label>
+                                        <Label Text="{Binding Email}" FontSize="Small"></Label>
+                                    </StackLayout>
+                                </StackLayout>
+                            </ViewCell>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -25,7 +32,29 @@
     </ContentPage>
 
     <ContentPage Title="Evaluations">
-        
+        <ContentPage.ToolbarItems>
+            <ToolbarItem Icon="ic_custom_agregar" Clicked="MakeNewEvaluation"></ToolbarItem>
+        </ContentPage.ToolbarItems>
+
+        <ContentPage.Content>
+            <StackLayout Orientation="Vertical" Padding="15">
+                <ListView x:Name="listviewEvaluations" ItemTapped="ShowEvaluationInfo">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                    <Image Source="ic_custom_evaluaciones.png"></Image>
+                                    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand">
+                                        <Label Text="{Binding Name}" TextColor="Red" FontSize="Medium"></Label>
+                                    </StackLayout>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </ContentPage.Content>
+
     </ContentPage>
 
 </TabbedPage>

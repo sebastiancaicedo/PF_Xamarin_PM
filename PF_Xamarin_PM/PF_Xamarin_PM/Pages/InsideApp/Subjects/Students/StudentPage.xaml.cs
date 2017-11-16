@@ -12,8 +12,13 @@ namespace PF_Xamarin_PM
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class StudentPage : ContentPage
 	{
-		public StudentPage ()
+        private Student StudentToShow { get; set; }
+
+		public StudentPage (Student student)
 		{
+            StudentToShow = student;
+            Title = student.Name;
+            BindingContext = StudentToShow;
 			InitializeComponent ();
 		}
 	}

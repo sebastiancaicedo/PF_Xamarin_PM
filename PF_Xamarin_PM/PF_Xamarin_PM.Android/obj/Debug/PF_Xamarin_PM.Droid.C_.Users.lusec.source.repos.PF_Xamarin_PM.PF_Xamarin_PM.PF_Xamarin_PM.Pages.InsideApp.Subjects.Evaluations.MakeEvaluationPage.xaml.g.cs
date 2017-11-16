@@ -12,20 +12,20 @@ namespace PF_Xamarin_PM {
     
     
     [global::Xamarin.Forms.Xaml.XamlFilePathAttribute("C:\\Users\\lusec\\source\\repos\\PF_Xamarin_PM\\PF_Xamarin_PM\\PF_Xamarin_PM\\Pages\\Insid" +
-        "eApp\\Subjects\\SubjectPage.xaml")]
-    public partial class SubjectPage : global::Xamarin.Forms.TabbedPage {
+        "eApp\\Subjects\\Evaluations\\MakeEvaluationPage.xaml")]
+    public partial class MakeEvaluationPage : global::Xamarin.Forms.ContentPage {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.ListView listviewStudents;
+        private global::Xamarin.Forms.Entry entryName;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.ListView listviewEvaluations;
+        private global::Xamarin.Forms.Picker pickerRubrics;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private void InitializeComponent() {
-            global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(SubjectPage));
-            listviewStudents = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ListView>(this, "listviewStudents");
-            listviewEvaluations = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ListView>(this, "listviewEvaluations");
+            global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(MakeEvaluationPage));
+            entryName = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Entry>(this, "entryName");
+            pickerRubrics = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Picker>(this, "pickerRubrics");
         }
     }
 }

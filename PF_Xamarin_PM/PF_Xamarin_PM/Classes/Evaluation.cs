@@ -1,10 +1,220 @@
-﻿using System;
+﻿using Firebase.Xamarin.Database.Query;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace PF_Xamarin_PM
 {
     public class Evaluation
     {
+        private string Uid { get; set; } = null;
+        public string Name { get; private set; }
+        public string SubjectKey { get; private set; }
+        public string RubricKey { get; private set; }
+        public bool IsCompleted { get { return checkForCompletion(); } }
+        public IList<Calification> Califications { get; private set; } = new ObservableCollection<Calification>();
+
+        private List<Picker> ElementsPickers { get; set; } = new List<Picker>();
+        private bool ChangesSaved { get; set; } = false;
+        private ToolbarItem ToolbarItemIndicator { get; set; }
+
+        public Evaluation(string name, string subjectKey, string rubricKey)
+        {
+            Name = name;
+            SubjectKey = subjectKey;
+            RubricKey = rubricKey;
+            Uid = FirebaseHelper.GetNewUniqueID();
+        }
+
+        public string GetUid()
+        {
+            return Uid;
+        }
+
+        public void SetUid(string key)
+        {
+            Uid = key;
+        }
+
+        private bool checkForCompletion()
+        {
+            for (int index = 0; index < ElementsPickers.Count; index++)
+            {
+                if(ElementsPickers[index].SelectedIndex == -1)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool CheckIfSaved()
+        {
+            return ChangesSaved;
+        }
+
+        public void SetToolbarInidicator(ToolbarItem toolbarItem)
+        {
+            ToolbarItemIndicator = toolbarItem;
+        }
+
+        public void SaveEvaluationOnDB()
+        {
+            try
+            {
+                FirebaseHelper.firebaseDBClient
+                    .Child("evaluations")
+                    .Child(this.Uid)
+                    .PutAsync<Evaluation>(this);
+
+                ChangesSaved = true;
+                ToolbarItemIndicator.Text = "Saved";
+
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public View SetUp(Rubric rubric, IList<Student> students)
+        {
+            StackLayout layoutReturn = new StackLayout { Orientation = StackOrientation.Vertical };
+            foreach (var student in students)
+            {
+                Calification calification = new Calification(student.GetKey(), rubric.Categories.Count);
+                StackLayout layoutStudent = new StackLayout { Orientation = StackOrientation.Vertical };
+
+                Label studentName = new Label { Text = student.FullName, FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Large"), TextColor = Color.Red };
+                StackLayout layoutScore = new StackLayout { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand };
+                Label labelScoreTitle = new Label { Text = "Parcial Score", HorizontalOptions = LayoutOptions.StartAndExpand };
+                Label labelPartialScore = new Label { Text = calification.FinalScore.ToString(), HorizontalOptions = LayoutOptions.CenterAndExpand };
+                layoutScore.Children.Add(labelScoreTitle);
+                layoutScore.Children.Add(labelPartialScore);
+
+                layoutStudent.Children.Add(studentName);
+                layoutStudent.Children.Add(layoutScore);
+
+                foreach (var category in rubric.Categories)
+                {
+                    calification.CategoriesScores[rubric.Categories.IndexOf(category)] = new ScoreCategory(category.Elements.Count);
+
+                    StackLayout layoutCategory = new StackLayout { Orientation = StackOrientation.Vertical, Margin = new Thickness(20, 10, 0, 0) };
+
+                    StackLayout layoutCategoryHeader = new StackLayout { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand };
+                    Label labelCategoryName = new Label { Text = category.Name, HorizontalOptions = LayoutOptions.StartAndExpand };
+                    Label labelCategoryWeigth = new Label { Text = string.Format("{0}%", category.Weigth.ToString()), HorizontalOptions = LayoutOptions.CenterAndExpand };
+                    layoutCategoryHeader.Children.Add(labelCategoryName);
+                    layoutCategoryHeader.Children.Add(labelCategoryWeigth);
+
+                    layoutCategory.Children.Add(layoutCategoryHeader);
+
+                    layoutStudent.Children.Add(layoutCategory);
+
+                    foreach (var element in category.Elements)
+                    {
+                        StackLayout layoutElement = new StackLayout { Orientation = StackOrientation.Vertical, Margin = new Thickness(40, 20, 0, 0) };
+
+                        StackLayout layoutElementHeader = new StackLayout { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand };
+                        Label labelElementName = new Label { Text = element.Name, HorizontalOptions = LayoutOptions.StartAndExpand };
+                        Label labelElementWeigth = new Label { Text = string.Format("{0}%", element.Weigth.ToString()), HorizontalOptions = LayoutOptions.CenterAndExpand };
+                        Picker pickerLevel = new Picker { Title = "Select Nivel", ItemsSource = rubric.GetLevelsName(element.Levels) };
+                        ElementsPickers.Add(pickerLevel);
+                        pickerLevel.SelectedIndexChanged += (sender, args) =>
+                        {
+                            ToolbarItemIndicator.Text = "Unsaved";
+                            ChangesSaved = false;
+                            int levelSelected = pickerLevel.SelectedIndex;
+                            calification.CategoriesScores[rubric.Categories.IndexOf(category)].SetElementScore(category.Elements.IndexOf(element), element.Levels[levelSelected].Value);
+                            calculatePartialScore(calification, rubric);
+                            labelPartialScore.Text = calification.FinalScore.ToString();
+
+                        };
+                        layoutElementHeader.Children.Add(labelElementName);
+                        layoutElementHeader.Children.Add(labelElementWeigth);
+
+                        layoutElement.Children.Add(layoutElementHeader);
+                        layoutElement.Children.Add(pickerLevel);
+
+                        layoutStudent.Children.Add(layoutElement);
+                    }
+                }
+
+                layoutReturn.Children.Add(layoutStudent);
+            }
+
+            return layoutReturn;
+        }
+
+        private void calculatePartialScore(Calification calification, Rubric rubric)
+        {
+            float sumElements = 0;
+            float sumCategories = 0;
+            for (int indexCategory = 0; indexCategory < calification.CategoriesScores.Length; indexCategory++)
+            {
+                ScoreCategory scoreCategory = calification.CategoriesScores[indexCategory];
+                for (int indexElement = 0; indexElement < scoreCategory.ElementScores.Length; indexElement++)
+                {
+                    float elementScore = scoreCategory.ElementScores[indexElement];
+                    float elementWeigth = rubric.Categories[indexCategory].Elements[indexElement].Weigth;
+                    if (elementScore > -1)
+                    {
+                        sumElements += elementScore * (elementWeigth / 100);
+                    }
+                }
+                scoreCategory.CategoryScore = sumElements;
+                float categoryWeigth = rubric.Categories[indexCategory].Weigth;
+                sumCategories += sumElements * (categoryWeigth / 100);
+            }
+            calification.FinalScore = sumCategories;
+        }
+
+        public class Calification
+        {
+            public string StudentKey { get; private set; }
+            public ScoreCategory[] CategoriesScores { get; private set; }
+            public float FinalScore { get; set; } = 0;
+
+            public Calification(string studentKey, ScoreCategory[] scoresByCategories, float finalScore)
+            {
+                StudentKey = studentKey;
+                CategoriesScores = scoresByCategories;
+                FinalScore = finalScore;
+            }
+
+            public Calification(string studentKey, int numberOfCategories)
+            {
+                StudentKey = studentKey;
+                CategoriesScores = new ScoreCategory[numberOfCategories];
+            }
+        }
+
+        public class ScoreCategory
+        {
+            public float CategoryScore { get; set; } = 0;
+            public float[] ElementScores { get; private set; }
+
+            public ScoreCategory(int size)
+            {
+                ElementScores = new float[size];
+                for (int index = 0; index < size; index++)
+                {
+                    ElementScores[index] = -1;
+                }
+            }
+
+            public ScoreCategory(float categoryScore, float[] elementScores)
+            {
+                CategoryScore = categoryScore;
+                ElementScores = elementScores;
+            }
+
+            public void SetElementScore(int elementIndex, float score)
+            {
+                ElementScores[elementIndex] = score;
+            }
+        }
     }
 }

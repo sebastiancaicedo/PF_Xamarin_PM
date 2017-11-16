@@ -9,37 +9,36 @@ namespace PF_Xamarin_PM
 {
     public class Subject
     {
+        private string UId { get; set; } = null;
         public string Name { get; private set; }
         public string ProfessorId { get; private set; } 
         public List<string> StudentsKeys { get; private set; } = new List<string>();
-        //private IList<Evaluation> Evaluations { get; set; } = new ObservableCollection<Evaluation>();
-
-        private string authKey = null;
+        public List<string> EvaluationsKeys { get; private set; } = new List<string>();
 
         public Subject(string name, string professorId)
         {
             Name = name;
             ProfessorId = professorId;
-            authKey = FirebaseHelper.GetNewUniqueID();
+            UId = FirebaseHelper.GetNewUniqueID();
         }
 
-        public string GetAuthId()
+        public string GetUId()
         {
-            return authKey;
+            return UId;
         }
 
-        public void SetAuthId(string key)
+        public void SetUId(string key)
         {
-            authKey = key;
+            UId = key;
         }
 
-        private void SaveSubjectOnDB()
+        public void SaveSubjectOnDB()
         {
             try
             {
                 FirebaseHelper.firebaseDBClient
                     .Child("subjects")
-                    .Child(authKey)
+                    .Child(UId)
                     .PutAsync<Subject>(this);
             }
             catch (Exception ex)
@@ -59,7 +58,7 @@ namespace PF_Xamarin_PM
             {
                 string studentKey = student.GetKey();
                 StudentsKeys.Add(studentKey);
-                student.SubjectsKeys.Add(authKey);
+                student.SubjectsKeys.Add(UId);
                 FirebaseHelper.firebaseDBClient
                     .Child("students")
                     .Child(studentKey)

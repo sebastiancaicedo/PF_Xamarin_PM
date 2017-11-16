@@ -80,7 +80,6 @@ namespace PF_Xamarin_PM
                     var items = await FirebaseHelper.firebaseDBClient
                          .Child("professors")
                          .OnceAsync<Professor>();
-
                     
 
                     foreach (var item in items)

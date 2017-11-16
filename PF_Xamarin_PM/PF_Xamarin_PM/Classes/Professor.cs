@@ -18,8 +18,7 @@ namespace PF_Xamarin_PM
         public string Email { get; private set; }
         public string FullName { get { return string.Format("{0} {1}", Name, LastName); } }
         public List<string> SubjectsKeys { get; private set; } = new List<string>();
-        //public IList<Subject> Subjects { get; private set; } = new ObservableCollection<Subject>();
-        //private IList<Rubric> Rubrics { get; set; } = new ObservableCollection<Rubric>();
+        public List<string> RubricsKeys { get; private set; } = new List<string>();
 
         public Professor(string name, string lastName, string email)
         {
@@ -57,7 +56,7 @@ namespace PF_Xamarin_PM
             //Creamos una nueva asignatura
             try
             {
-                string subjectKey = subject.GetAuthId();
+                string subjectKey = subject.GetUId();
                 SubjectsKeys.Add(subjectKey);
                 SaveThisUserOnDB();
                 FirebaseHelper.firebaseDBClient
@@ -65,6 +64,25 @@ namespace PF_Xamarin_PM
                     .Child(subjectKey)
                     .PutAsync<Subject>(subject);
 
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public void AddRubric(Rubric rubric)
+        {
+            try
+            {
+                string rubricKey = rubric.GetUid();
+                RubricsKeys.Add(rubricKey);
+                SaveThisUserOnDB();
+                FirebaseHelper.firebaseDBClient
+                    .Child("rubrics")
+                    .Child(rubricKey)
+                    .PutAsync<Rubric>(rubric);
             }
             catch (Exception ex)
             {
