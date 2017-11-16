@@ -164,6 +164,9 @@
   <ItemGroup>
     <AndroidResource Include="Resources\Drawable\ic_custom_signout.png" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\app_icon.png" />
+  </ItemGroup>
   <Import Project="..\PF_Xamarin_PM\PF_Xamarin_PM.projitems" Label="Shared" Condition="Exists('..\PF_Xamarin_PM\PF_Xamarin_PM.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets')" />

@@ -4,8 +4,8 @@
              x:Class="PF_Xamarin_PM.EvaluationPage">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Save" Clicked="SaveEvaluation"></ToolbarItem>
         <ToolbarItem x:Name="labelEvaluationStatus" Text="Unsaved"></ToolbarItem>
+        <ToolbarItem Icon="ic_custom_guardar.png"  Clicked="SaveEvaluation"></ToolbarItem>
     </ContentPage.ToolbarItems>
     
     <ContentPage.Content>

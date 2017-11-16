@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.pm.proyectofinalxamarin" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="15" />
-	<application android:label="PF_Xamarin_PM.Android"></application>
+	<application android:label="PF_Xamarin_PM.Android" android:icon="@drawable/app_icon"></application>
 </manifest>

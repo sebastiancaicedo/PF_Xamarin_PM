@@ -19,11 +19,12 @@ namespace PF_Xamarin_PM
         private IList<Student> students;
         private List<Rubric> Rubrics = new List<Rubric>();
 
-        public MakeEvaluationPage (string subjectKey, IList<Student> students)
+        public MakeEvaluationPage (Subject subject, IList<Student> students)
 		{
             Title = "New Evaluation";
+            this.subject = subject;
             this.students = students;
-            this.subjectKey = subjectKey;
+            subjectKey = subject.GetUId();
             InitializeComponent ();
 		}
 
@@ -65,6 +66,8 @@ namespace PF_Xamarin_PM
             if (!String.IsNullOrEmpty(name) && rubricIndex > -1)
             {
                 Evaluation evaluation = new Evaluation(name, subjectKey, Rubrics[rubricIndex].GetUid());
+                subject.EvaluationsKeys.Add(evaluation.GetUid());
+                evaluation.EvaluationSaved += OnEvaluationSaved;
                 EvaluationPage page = new EvaluationPage(evaluation, Rubrics[rubricIndex], students);
                 page.FinishActivity += OnFinishEvaluation;
                 Navigation.PushModalAsync(new NavigationPage(page));
@@ -75,12 +78,14 @@ namespace PF_Xamarin_PM
             }
         }
 
+        private void OnEvaluationSaved(object sender, EventArgs e)
+        {
+            subject.SaveSubjectOnDB();
+        }
+
         private void OnFinishEvaluation(object sender, ReturnInfo<Evaluation> e)
         {
-            if (e.Result == ReturnResult.Successful || e.Result == ReturnResult.UnCompleted)
-            {
-                FinishActivity(this, new ReturnInfo<Evaluation>(e.Result, e.Data));
-            }
+            FinishActivity(this, new ReturnInfo<Evaluation>(e.Result, e.Data));
             Navigation.PopAsync();
         }
     }

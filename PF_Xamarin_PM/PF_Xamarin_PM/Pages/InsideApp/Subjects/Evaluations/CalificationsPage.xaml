@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PF_Xamarin_PM.CalificationsPage">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Editar"></ToolbarItem>
+    </ContentPage.ToolbarItems>
+    
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Padding="15">
+            <ListView x:Name="listviewCalifications" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell Height="70">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <Image Source="ic_custom_evaluaciones.png"></Image>
+                                <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand">
+                                    <Label Text="{Binding StudentFullName}" FontSize="Medium" TextColor="Red"></Label>
+                                    <Label Text="{Binding FinalScore}" FontSize="Medium"></Label>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

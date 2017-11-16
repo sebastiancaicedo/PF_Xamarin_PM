@@ -10,6 +10,8 @@ namespace PF_Xamarin_PM
 {
     public class Evaluation
     {
+        public event EventHandler EvaluationSaved;
+
         private string Uid { get; set; } = null;
         public string Name { get; private set; }
         public string SubjectKey { get; private set; }
@@ -19,6 +21,7 @@ namespace PF_Xamarin_PM
 
         private List<Picker> ElementsPickers { get; set; } = new List<Picker>();
         private bool ChangesSaved { get; set; } = false;
+        private bool WasSavedOnce { get; set; } = false;
         private ToolbarItem ToolbarItemIndicator { get; set; }
 
         public Evaluation(string name, string subjectKey, string rubricKey)
@@ -27,6 +30,15 @@ namespace PF_Xamarin_PM
             SubjectKey = subjectKey;
             RubricKey = rubricKey;
             Uid = FirebaseHelper.GetNewUniqueID();
+        }
+
+        [Newtonsoft.Json.JsonConstructor]
+        public Evaluation(string name, string subjectKey, string rubricKey, IList<Calification> califications)
+        {
+            Name = name;
+            SubjectKey = subjectKey;
+            RubricKey = rubricKey;
+            Califications = califications;
         }
 
         public string GetUid()
@@ -61,6 +73,11 @@ namespace PF_Xamarin_PM
             ToolbarItemIndicator = toolbarItem;
         }
 
+        public bool CheckIfSavedAtLeastOnce()
+        {
+            return WasSavedOnce;
+        }
+
         public void SaveEvaluationOnDB()
         {
             try
@@ -71,7 +88,9 @@ namespace PF_Xamarin_PM
                     .PutAsync<Evaluation>(this);
 
                 ChangesSaved = true;
+                WasSavedOnce = true;
                 ToolbarItemIndicator.Text = "Saved";
+                EvaluationSaved(this, EventArgs.Empty);
 
             }catch(Exception ex)
             {
@@ -84,7 +103,8 @@ namespace PF_Xamarin_PM
             StackLayout layoutReturn = new StackLayout { Orientation = StackOrientation.Vertical };
             foreach (var student in students)
             {
-                Calification calification = new Calification(student.GetKey(), rubric.Categories.Count);
+                Calification calification = new Calification(student.GetKey(), student.FullName, rubric.Categories.Count);
+                Califications.Add(calification);
                 StackLayout layoutStudent = new StackLayout { Orientation = StackOrientation.Vertical };
 
                 Label studentName = new Label { Text = student.FullName, FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Large"), TextColor = Color.Red };
@@ -174,19 +194,23 @@ namespace PF_Xamarin_PM
         public class Calification
         {
             public string StudentKey { get; private set; }
+            public string StudentFullName { get; private set; }
             public ScoreCategory[] CategoriesScores { get; private set; }
             public float FinalScore { get; set; } = 0;
 
-            public Calification(string studentKey, ScoreCategory[] scoresByCategories, float finalScore)
+            [Newtonsoft.Json.JsonConstructor]
+            public Calification(string studentKey, string studentFullName, ScoreCategory[] categoriesScores, float finalScore)
             {
                 StudentKey = studentKey;
-                CategoriesScores = scoresByCategories;
+                StudentFullName = studentFullName;
+                CategoriesScores = categoriesScores;
                 FinalScore = finalScore;
             }
 
-            public Calification(string studentKey, int numberOfCategories)
+            public Calification(string studentKey, string studentFullName, int numberOfCategories)
             {
                 StudentKey = studentKey;
+                StudentFullName = studentFullName;
                 CategoriesScores = new ScoreCategory[numberOfCategories];
             }
         }
@@ -205,6 +229,7 @@ namespace PF_Xamarin_PM
                 }
             }
 
+            [Newtonsoft.Json.JsonConstructor]
             public ScoreCategory(float categoryScore, float[] elementScores)
             {
                 CategoryScore = categoryScore;

@@ -98,7 +98,8 @@ namespace PF_Xamarin_PM
                     }
                 }catch(Exception ex)
                 {
-                    throw ex;
+                    await DisplayAlert("error", "error trayendo evaluaciones " + ex, "OK");
+                    //throw ex;
                 }
             }
             return 0;
@@ -121,7 +122,7 @@ namespace PF_Xamarin_PM
 
         public void MakeNewEvaluation(object sender, EventArgs e)
         {
-            MakeEvaluationPage page = new MakeEvaluationPage(subjectToShow.GetUId(), students);
+            MakeEvaluationPage page = new MakeEvaluationPage(subjectToShow, students);
             page.FinishActivity += OnFinishEvaluation;
             Navigation.PushAsync(page);
         }
@@ -130,16 +131,19 @@ namespace PF_Xamarin_PM
         {
             if (e.Result == ReturnResult.UnCompleted)
             {
-                subjectToShow.EvaluationsKeys.Add(e.Data.GetUid());
                 subjectToShow.SaveSubjectOnDB();
                 evaluations.Add(e.Data);
             }
             else
                 if (e.Result == ReturnResult.Successful)
             {
-                subjectToShow.EvaluationsKeys.Add(e.Data.GetUid());
                 subjectToShow.SaveSubjectOnDB();
                 evaluations.Add(e.Data);
+            }
+            else
+            {
+                subjectToShow.EvaluationsKeys.Remove(e.Data.GetUid());
+                subjectToShow.SaveSubjectOnDB();
             }
         }
 
@@ -151,9 +155,12 @@ namespace PF_Xamarin_PM
             (sender as ListView).SelectedItem = null;
         }
 
-        public void ShowEvaluationInfo(object sender, EventArgs e)
+        public void ShowEvaluationInfo(object sender, ItemTappedEventArgs e)
         {
-            throw new NotImplementedException();
+            Evaluation evaluation = e.Item as Evaluation;
+            CalificationsPage page = new CalificationsPage(evaluation, students);
+            Navigation.PushAsync(page);
+            (sender as ListView).SelectedItem = null;
         }
     }
 }

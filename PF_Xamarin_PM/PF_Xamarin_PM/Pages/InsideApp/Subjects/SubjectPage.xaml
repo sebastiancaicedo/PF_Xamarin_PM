@@ -12,14 +12,14 @@
         
         <ContentPage.Content>
             <StackLayout Orientation="Vertical" Padding="15">
-                <ListView x:Name="listviewStudents" ItemTapped="ShowStudentInfo">
+                <ListView x:Name="listviewStudents" ItemTapped="ShowStudentInfo" HasUnevenRows="true">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <ViewCell Height="100">
+                            <ViewCell Height="70">
                                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                                     <Image Source="ic_custom_estudiante.png" VerticalOptions="CenterAndExpand"></Image>
                                     <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand">
-                                        <Label Text="{Binding FullName}" TextColor="Red" FontSize="Medium"></Label>
+                                        <Label Text="{Binding FullName}" TextColor="Red" FontSize="Large"></Label>
                                         <Label Text="{Binding Email}" FontSize="Small"></Label>
                                     </StackLayout>
                                 </StackLayout>

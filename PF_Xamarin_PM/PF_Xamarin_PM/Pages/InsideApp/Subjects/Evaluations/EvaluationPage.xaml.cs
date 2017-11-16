@@ -33,25 +33,37 @@ namespace PF_Xamarin_PM
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                if (!evaluation.CheckIfSaved())
+                if (evaluation.CheckIfSavedAtLeastOnce())
                 {
-                    var exit = await DisplayAlert("Exit", "Changes won't be save, What will you do?", "Exit", "Continue Evaluation");
-                    if (exit)
+                    if (!evaluation.CheckIfSaved())
                     {
-                        FinishActivity(this, new ReturnInfo<Evaluation>(ReturnResult.Failed, null));
-                        await Navigation.PopModalAsync(); // or anything else
+                        var exit = await DisplayAlert("Exit", "Changes won't be save, What will you do?", "Exit", "Continue Evaluation");
+                        if (exit)
+                        {
+                            FinishActivity(this, new ReturnInfo<Evaluation>(ReturnResult.UnCompleted, evaluation));
+                            await Navigation.PopModalAsync(); // or anything else
+                        }
+                    }
+                    else
+                    {
+                        if (evaluation.IsCompleted)
+                        {
+                            FinishActivity(this, new ReturnInfo<Evaluation>(ReturnResult.Successful, evaluation));
+                            await Navigation.PopModalAsync(); // or anything else
+                        }
+                        else
+                        {
+                            FinishActivity(this, new ReturnInfo<Evaluation>(ReturnResult.UnCompleted, evaluation));
+                            await Navigation.PopModalAsync(); // or anything else
+                        }
                     }
                 }
                 else
                 {
-                    if (evaluation.IsCompleted)
+                    var discardAll = await DisplayAlert("Exit", "Do you really want to discard this evaluation?", "Discard and Exit", "Continue Evaluation");
+                    if (discardAll)
                     {
-                        FinishActivity(this, new ReturnInfo<Evaluation>(ReturnResult.Successful, evaluation));
-                        await Navigation.PopModalAsync(); // or anything else
-                    }
-                    else
-                    {
-                        FinishActivity(this, new ReturnInfo<Evaluation>(ReturnResult.UnCompleted, evaluation));
+                        FinishActivity(this, new ReturnInfo<Evaluation>(ReturnResult.Failed, evaluation));
                         await Navigation.PopModalAsync(); // or anything else
                     }
                 }
