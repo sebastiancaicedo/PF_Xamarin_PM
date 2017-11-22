@@ -1,10 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PF_Xamarin_PM.CreateRubricPage">
-    <ContentPage.Content>
-        <StackLayout Orientation="Vertical">
-            <Button Text="Crear Default" Clicked="Crear"></Button>
-        </StackLayout>
-    </ContentPage.Content>
-</ContentPage>
+
+    <ContentPage Title="Información Basica">
+        <ContentPage.Content>
+            <StackLayout Orientation="Vertical" Margin="15">
+                <Label Text="Nombre de la Rubrica"></Label>
+                <Entry x:Name="entryRubricName" Placeholder="Nombre de la rubrica"></Entry>
+                <Label Text="Rango de Notas"></Label>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <Entry x:Name="entryMinScore" Keyboard="Numeric" Placeholder="Min" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Entry>
+                    <Label Text="-" FontSize="Medium" HorizontalOptions="CenterAndExpand" VerticalTextAlignment="Center"></Label>
+                    <Entry x:Name="entryMaxScore" Keyboard="Numeric" Placeholder="Max" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Entry>
+                </StackLayout>
+            </StackLayout>
+        </ContentPage.Content>
+    </ContentPage>
+
+    <ContentPage Title="Estructura">
+
+        <ContentPage.ToolbarItems>
+            <ToolbarItem Icon="ic_custom_guardar.png" Clicked="SaveRubric"></ToolbarItem>
+        </ContentPage.ToolbarItems>
+
+        <ContentPage.Content>
+            <StackLayout Orientation="Vertical" Margin="15">
+                <ScrollView Orientation="Vertical">
+                    <StackLayout x:Name="layoutMain" Orientation="Vertical" VerticalOptions="FillAndExpand">
+                    </StackLayout>
+                </ScrollView>
+                <Button Text="Agregar Categoria" Clicked="AddCategory"></Button>
+            </StackLayout>
+        </ContentPage.Content>
+    </ContentPage>
+</TabbedPage>

@@ -12,7 +12,10 @@
         
         <ContentPage.Content>
             <StackLayout Orientation="Vertical" Padding="15">
-                <ListView x:Name="listviewStudents" ItemTapped="ShowStudentInfo" HasUnevenRows="true">
+                <ListView x:Name="listviewStudents" ItemTapped="ShowStudentInfo" HasUnevenRows="true"
+                          IsPullToRefreshEnabled="True"
+                      RefreshCommand="{Binding StudsRefreshCommand}"
+                      IsRefreshing="{Binding StudsIsRefreshing}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell Height="70">
@@ -38,7 +41,10 @@
 
         <ContentPage.Content>
             <StackLayout Orientation="Vertical" Padding="15">
-                <ListView x:Name="listviewEvaluations" ItemTapped="ShowEvaluationInfo">
+                <ListView x:Name="listviewEvaluations" ItemTapped="ShowEvaluationInfo"
+                          IsPullToRefreshEnabled="True"
+                      RefreshCommand="{Binding EvalsRefreshCommand}"
+                      IsRefreshing="{Binding EvalsIsRefreshing}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>

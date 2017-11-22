@@ -88,9 +88,11 @@ namespace PF_Xamarin_PM
                     .PutAsync<Evaluation>(this);
 
                 ChangesSaved = true;
-                WasSavedOnce = true;
                 ToolbarItemIndicator.Text = "Saved";
-                EvaluationSaved(this, EventArgs.Empty);
+                if (!WasSavedOnce) {
+                    WasSavedOnce = true;
+                    EvaluationSaved(this, EventArgs.Empty);
+                }
 
             }catch(Exception ex)
             {
@@ -146,8 +148,11 @@ namespace PF_Xamarin_PM
                         {
                             ToolbarItemIndicator.Text = "Unsaved";
                             ChangesSaved = false;
+                            int categoryIndex = rubric.Categories.IndexOf(category);
+                            int elementIndex = category.Elements.IndexOf(element);
                             int levelSelected = pickerLevel.SelectedIndex;
-                            calification.CategoriesScores[rubric.Categories.IndexOf(category)].SetElementScore(category.Elements.IndexOf(element), element.Levels[levelSelected].Value);
+
+                            calification.CategoriesScores[categoryIndex].SetElementScore(elementIndex, levelSelected, element.Levels[levelSelected].Value);
                             calculatePartialScore(calification, rubric);
                             labelPartialScore.Text = calification.FinalScore.ToString();
 
@@ -165,6 +170,84 @@ namespace PF_Xamarin_PM
                 layoutReturn.Children.Add(layoutStudent);
             }
 
+            return layoutReturn;
+        }
+
+        public View SetUpForEdit(Rubric rubric)
+        {
+            ElementsPickers = new List<Picker>();
+            ChangesSaved = true;
+            WasSavedOnce = true;
+            ToolbarItemIndicator.Text = "Saved";
+            StackLayout layoutReturn = new StackLayout { Orientation = StackOrientation.Vertical };
+            foreach (var calification in Califications)
+            {
+                StackLayout layoutStudent = new StackLayout { Orientation = StackOrientation.Vertical };
+
+                Label studentName = new Label { Text = calification.StudentFullName, FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Large"), TextColor = Color.Red };
+                StackLayout layoutScore = new StackLayout { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand };
+                Label labelScoreTitle = new Label { Text = "Nota Parcial", HorizontalOptions = LayoutOptions.StartAndExpand };
+                Label labelPartialScore = new Label { Text = calification.FinalScore.ToString(), HorizontalOptions = LayoutOptions.CenterAndExpand };
+                layoutScore.Children.Add(labelScoreTitle);
+                layoutScore.Children.Add(labelPartialScore);
+
+                layoutStudent.Children.Add(studentName);
+                layoutStudent.Children.Add(layoutScore);
+                foreach (var category in rubric.Categories)
+                {
+                    int categoryIndex = rubric.Categories.IndexOf(category);
+                    //calification.CategoriesScores[rubric.Categories.IndexOf(category)] = new ScoreCategory(category.Elements.Count);
+
+                    StackLayout layoutCategory = new StackLayout { Orientation = StackOrientation.Vertical, Margin = new Thickness(20, 10, 0, 0) };
+
+                    StackLayout layoutCategoryHeader = new StackLayout { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand };
+                    Label labelCategoryName = new Label { Text = category.Name, HorizontalOptions = LayoutOptions.StartAndExpand };
+                    Label labelCategoryWeigth = new Label { Text = string.Format("{0}%", category.Weigth.ToString()), HorizontalOptions = LayoutOptions.CenterAndExpand };
+                    layoutCategoryHeader.Children.Add(labelCategoryName);
+                    layoutCategoryHeader.Children.Add(labelCategoryWeigth);
+
+                    layoutCategory.Children.Add(layoutCategoryHeader);
+
+                    layoutStudent.Children.Add(layoutCategory);
+
+                    foreach (var element in category.Elements)
+                    {
+                        int elementIndex = category.Elements.IndexOf(element);
+                        StackLayout layoutElement = new StackLayout { Orientation = StackOrientation.Vertical, Margin = new Thickness(40, 20, 0, 0) };
+
+                        StackLayout layoutElementHeader = new StackLayout { Orientation = StackOrientation.Horizontal, HorizontalOptions = LayoutOptions.FillAndExpand };
+                        Label labelElementName = new Label { Text = element.Name, HorizontalOptions = LayoutOptions.StartAndExpand };
+                        Label labelElementWeigth = new Label { Text = string.Format("{0}%", element.Weigth.ToString()), HorizontalOptions = LayoutOptions.CenterAndExpand };
+                        Picker pickerLevel = new Picker { Title = "Seleccione Nivel", ItemsSource = rubric.GetLevelsName(element.Levels) };
+                        int elementSelectedLevelIndex = calification.CategoriesScores[categoryIndex].ElementsSelectedLevelsIndex[elementIndex];
+                        if(elementSelectedLevelIndex != -1)
+                        {
+                            pickerLevel.SelectedIndex = elementSelectedLevelIndex;
+                        }
+                        ElementsPickers.Add(pickerLevel);
+                        pickerLevel.SelectedIndexChanged += (sender, args) =>
+                        {
+                            ToolbarItemIndicator.Text = "Unsaved";
+                            ChangesSaved = false;
+
+                            int levelSelected = pickerLevel.SelectedIndex;
+
+                            calification.CategoriesScores[categoryIndex].SetElementScore(elementIndex, levelSelected, element.Levels[levelSelected].Value);
+                            calculatePartialScore(calification, rubric);
+                            labelPartialScore.Text = calification.FinalScore.ToString();
+
+                        };
+                        layoutElementHeader.Children.Add(labelElementName);
+                        layoutElementHeader.Children.Add(labelElementWeigth);
+
+                        layoutElement.Children.Add(layoutElementHeader);
+                        layoutElement.Children.Add(pickerLevel);
+
+                        layoutStudent.Children.Add(layoutElement);
+                    }
+                }
+                layoutReturn.Children.Add(layoutStudent);
+            }
             return layoutReturn;
         }
 
@@ -219,26 +302,31 @@ namespace PF_Xamarin_PM
         {
             public float CategoryScore { get; set; } = 0;
             public float[] ElementScores { get; private set; }
+            public int[] ElementsSelectedLevelsIndex { get; private set; }
 
             public ScoreCategory(int size)
             {
                 ElementScores = new float[size];
+                ElementsSelectedLevelsIndex = new int[size];
                 for (int index = 0; index < size; index++)
                 {
                     ElementScores[index] = -1;
+                    ElementsSelectedLevelsIndex[index] = -1;
                 }
             }
 
             [Newtonsoft.Json.JsonConstructor]
-            public ScoreCategory(float categoryScore, float[] elementScores)
+            public ScoreCategory(float categoryScore, float[] elementScores, int[] elementsSelectedLevelsIndex)
             {
                 CategoryScore = categoryScore;
                 ElementScores = elementScores;
+                ElementsSelectedLevelsIndex = elementsSelectedLevelsIndex;
             }
 
-            public void SetElementScore(int elementIndex, float score)
+            public void SetElementScore(int elementIndex, int selectedLevelIndex, float levelScoreValue)
             {
-                ElementScores[elementIndex] = score;
+                ElementScores[elementIndex] = levelScoreValue;
+                ElementsSelectedLevelsIndex[elementIndex] = selectedLevelIndex;
             }
         }
     }

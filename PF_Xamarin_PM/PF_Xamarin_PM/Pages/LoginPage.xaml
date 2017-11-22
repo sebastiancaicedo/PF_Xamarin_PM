@@ -6,13 +6,14 @@
 
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" Padding="10">
-            <StackLayout Orientation="Vertical" VerticalOptions="StartAndExpand">
+            <StackLayout x:Name="layoutTop" Orientation="Vertical" VerticalOptions="StartAndExpand">
                 <Entry x:Name="entryEmail" Placeholder="example@uninorte.edu.co"></Entry>
-                <Entry x:Name="entryPassword" Placeholder="******"></Entry>
+                <Entry x:Name="entryPassword" Placeholder="Contraseña" IsPassword="True"></Entry>
                 <Button Text="Sign In" Clicked="LogIn"></Button>
             </StackLayout>
-            <StackLayout Orientation="Vertical" VerticalOptions="EndAndExpand">
-                <Button Text="Don't have an account?. Register here" Clicked="ShowRegisterPage"></Button>
+            <ActivityIndicator x:Name="loadIndicator" VerticalOptions="CenterAndExpand" Color="DodgerBlue"></ActivityIndicator>
+            <StackLayout x:Name="layoutBottom" Orientation="Vertical" VerticalOptions="EndAndExpand">
+                <Button Text="¿No tiene Cuenta?. Registrarse aquí" Clicked="ShowRegisterPage"></Button>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

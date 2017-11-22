@@ -21,8 +21,9 @@ namespace PF_Xamarin_PM
 			InitializeComponent ();
 		}
 
-        public void AddStudent(object sender, EventArgs e)
+        public async void AddStudent(object sender, EventArgs e)
         {
+            StartLoadIndicator();
             string name = entryName.Text;
             string lastName = entryLastName.Text;
             string email = entryEmail.Text;
@@ -35,27 +36,43 @@ namespace PF_Xamarin_PM
                     //verificamos que la cuenta no exista
                     try
                     {
-                        studentAuthInfo = FirebaseHelper.authProvider.CreateUserWithEmailAndPasswordAsync(email, STUDENT_DEFAULT_PASSWORD).Result;
+                        studentAuthInfo = await FirebaseHelper.authProvider.CreateUserWithEmailAndPasswordAsync(email, STUDENT_DEFAULT_PASSWORD);
                         Student student = new Student(name, lastName, studentAuthInfo.User.Email);
                         student.SetKey(studentAuthInfo.User.LocalId);
                         FinishActivity(this, new ReturnInfo<Student>(ReturnResult.Successful, student));
-                        Navigation.PopAsync();
+                        await Navigation.PopAsync();
                     }
                     catch (Exception ex)
                     {
-                        DisplayAlert("Error", "Email, already exists, use other", "OK");
+                        bool agregarExistente = await DisplayAlert("Existe", "El Email ingresado corresponde a un estudiante existente, desea agregarlo", "Agregar", "Cancelar");
+                        if (agregarExistente)
+                        {
+                            try
+                            {
+                                studentAuthInfo = await FirebaseHelper.authProvider.SignInWithEmailAndPasswordAsync(email, STUDENT_DEFAULT_PASSWORD);
+                                Student student = await FirebaseHelper.GetStudentById(studentAuthInfo.User.LocalId);
+                                FinishActivity(this, new ReturnInfo<Student>(ReturnResult.Successful, student));//Un completed lo tomaré como usuario existente
+                                await Navigation.PopAsync();
+                            }
+                            catch (Exception exe)
+                            {
+                                await DisplayAlert("Error", "Error, no se pudo cmpletar la accion " + exe, "OK");
+                                //throw;
+                            }
+                        }
                         //throw;
                     }
                 }
                 else
                 {
-                    DisplayAlert("Error", "Email is not valid, error cause: " + possibleError, "OK");
+                    await DisplayAlert("Error", "Email is not valid, error cause: " + possibleError, "OK");
                 }
             }
             else
             {
-                DisplayAlert("Error", "All fields must be full", "OK");
+                await DisplayAlert("Error", "All fields must be full", "OK");
             }
+            StopLoadIndicator();
         }
 
         /// <summary>
@@ -85,6 +102,18 @@ namespace PF_Xamarin_PM
             }
             errorCause = "email doesn't belong to @uninorte.edu.co domain";
             return false;
+        }
+
+        private void StartLoadIndicator()
+        {
+            loadIndicator.IsRunning = true;
+            layoutMain.IsVisible = false;
+        }
+
+        private void StopLoadIndicator()
+        {
+            loadIndicator.IsRunning = false;
+            layoutMain.IsVisible = true;
         }
 
     }

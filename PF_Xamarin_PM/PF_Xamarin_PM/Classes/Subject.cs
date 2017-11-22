@@ -32,19 +32,9 @@ namespace PF_Xamarin_PM
             UId = key;
         }
 
-        public void SaveSubjectOnDB()
+        public async void SaveSubjectOnDB()
         {
-            try
-            {
-                FirebaseHelper.firebaseDBClient
-                    .Child("subjects")
-                    .Child(UId)
-                    .PutAsync<Subject>(this);
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            await FirebaseHelper.SaveSubjectOnDB(this);
         }
 
         /// <summary>
@@ -54,23 +44,10 @@ namespace PF_Xamarin_PM
         /// <param name="student">El estudiante a agregar</param>
         public void AddStudent(Student student)
         {
-            try
-            {
-                string studentKey = student.GetKey();
-                StudentsKeys.Add(studentKey);
-                student.SubjectsKeys.Add(UId);
-                FirebaseHelper.firebaseDBClient
-                    .Child("students")
-                    .Child(studentKey)
-                    .PutAsync(student);
-
-                SaveSubjectOnDB();
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
+            StudentsKeys.Add(student.GetKey());
+            student.SubjectsKeys.Add(UId);
+            student.SaveStudentOnDB();
+            SaveSubjectOnDB();
             LoginPage.LoggedUser.SaveThisUserOnDB();
         }
     }

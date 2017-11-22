@@ -18,15 +18,22 @@ namespace PF_Xamarin_PM
         private IList<Student> students;
         private Rubric rubric;
 
-        public EvaluationPage (Evaluation evaluation, Rubric rubric, IList<Student> students)
+        public EvaluationPage(Evaluation evaluation, Rubric rubric, IList<Student> students, bool editEvaluation = false)
 		{
             Title = "Evaluation: "+evaluation.Name;
             this.evaluation = evaluation;
             this.students = students;
             this.rubric = rubric;
-			InitializeComponent ();
+            InitializeComponent();
             this.evaluation.SetToolbarInidicator(labelEvaluationStatus);
-            layoutMain.Children.Add(evaluation.SetUp(rubric, students));
+            if (!editEvaluation)
+            {
+                layoutMain.Children.Add(evaluation.SetUp(rubric, students));
+            }
+            else
+            {
+                layoutMain.Children.Add(evaluation.SetUpForEdit(rubric));
+            }
 		}
 
         protected override bool OnBackButtonPressed()
@@ -53,8 +60,12 @@ namespace PF_Xamarin_PM
                         }
                         else
                         {
-                            FinishActivity(this, new ReturnInfo<Evaluation>(ReturnResult.UnCompleted, evaluation));
-                            await Navigation.PopModalAsync(); // or anything else
+                            var exit = await DisplayAlert("Exit", "La evaluación no está completa, que desea hacer?", "Exit", "Continue Evaluation");
+                            if (exit)
+                            {
+                                FinishActivity(this, new ReturnInfo<Evaluation>(ReturnResult.UnCompleted, evaluation));
+                                await Navigation.PopModalAsync(); // or anything else
+                            }
                         }
                     }
                 }

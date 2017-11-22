@@ -1,11 +1,6 @@
 ﻿using Firebase.Xamarin.Database.Query;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
-using Firebase.Xamarin.Database;
-using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace PF_Xamarin_PM
 {
@@ -27,21 +22,22 @@ namespace PF_Xamarin_PM
             Email = email;
         }
 
-        public void SaveThisUserOnDB()
+        public async void SaveThisUserOnDB()
         {
-            try
-            {
-                FirebaseHelper.firebaseDBClient
-                .Child("professors")//tabla profesores
-                .Child(LoginPage.auth.User.LocalId)//se usa el id creado por la autenticacion como key tambien
-                //.WithAuth(token)
-                .PutAsync(this);
+            //try
+            //{
+                //FirebaseHelper.firebaseDBClient
+                //.Child("professors")//tabla profesores
+                //.Child(LoginPage.Auth.User.LocalId)//se usa el id creado por la autenticacion como key tambien
+                ////.WithAuth(token)
+                //.PutAsync(this);
+                await FirebaseHelper.SaveProfessorOnDB(this);
 
-            }
+            /*}
             catch (Exception ex)
             {
                 throw ex;
-            }
+            }*/
             
         }
 
@@ -53,23 +49,9 @@ namespace PF_Xamarin_PM
         public void AddSubject(Subject subject)
         {
             //Subjects.Add(subject);
-            //Creamos una nueva asignatura
-            try
-            {
-                string subjectKey = subject.GetUId();
-                SubjectsKeys.Add(subjectKey);
-                SaveThisUserOnDB();
-                FirebaseHelper.firebaseDBClient
-                    .Child("subjects")
-                    .Child(subjectKey)
-                    .PutAsync<Subject>(subject);
-
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
+            SubjectsKeys.Add(subject.GetUId());
+            SaveThisUserOnDB();
+            subject.SaveSubjectOnDB();
         }
 
         public void AddRubric(Rubric rubric)

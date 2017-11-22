@@ -40,6 +40,11 @@ namespace PF_Xamarin_PM
             SubjectsKeys.Add(subjectKey);
         }
 
+        public async void SaveStudentOnDB()
+        {
+            await FirebaseHelper.SaveStudentOnDB(this);
+        }
+
         /*public async Task<bool> SaveThisUserOnDB(BackTrackInfo subjectToAdd, bool newStudent = false)
         {
             try

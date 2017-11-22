@@ -18,7 +18,7 @@ namespace PF_Xamarin_PM
 
         public RegisterPage ()
 		{
-            Title = "Register";
+            Title = "Registro";
 			InitializeComponent ();
 		}
 
@@ -29,6 +29,7 @@ namespace PF_Xamarin_PM
         /// <param name="e"></param>
         public void Register(object sender, EventArgs e)
         {
+            StartLoadingIndicator();
             string name = entryName.Text;
             string lastName = entryLastName.Text;
             string email = entryEmail.Text;
@@ -45,24 +46,29 @@ namespace PF_Xamarin_PM
                         {
                             Professor professor = new Professor(name, lastName, email);
                             FinishActivity(this, new ReturnInfo<ReturnData>(ReturnResult.Successful, new ReturnData(professor, password)));
+                            StopLoadingIndicator();
                         }
                         else
                         {
+                            StopLoadingIndicator();
                             DisplayAlert("Error", "Confirmation password doesn't match", "OK");
                         }
                     }
                     else
                     {
+                        StopLoadingIndicator();
                         DisplayAlert("Error", "Password must have 6 or more characters", "OK");
                     }
                 }
                 else
                 {
+                    StopLoadingIndicator();
                     DisplayAlert("Error", "Email is not valid, error cause: "+possibleError, "OK");
                 }
             }
             else
-            { 
+            {
+                StopLoadingIndicator();
                 DisplayAlert("Error", "All fields must be full", "OK");
             }
         }
@@ -94,6 +100,18 @@ namespace PF_Xamarin_PM
             }
             errorCause = "email doesn't belong to @uninorte.edu.co domain";
             return false;
+        }
+
+        private void StartLoadingIndicator()
+        {
+            loadIndicator.IsRunning = true;
+            layoutMain.IsVisible = false;
+        }
+
+        private void StopLoadingIndicator()
+        {
+            loadIndicator.IsRunning = false;
+            layoutMain.IsVisible = true;
         }
 
         public struct ReturnData

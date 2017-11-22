@@ -13,11 +13,27 @@ namespace PF_Xamarin_PM {
     
     [global::Xamarin.Forms.Xaml.XamlFilePathAttribute("C:\\Users\\lusec\\source\\repos\\PF_Xamarin_PM\\PF_Xamarin_PM\\PF_Xamarin_PM\\Pages\\Insid" +
         "eApp\\Rubrics\\CreateRubricPage.xaml")]
-    public partial class CreateRubricPage : global::Xamarin.Forms.ContentPage {
+    public partial class CreateRubricPage : global::Xamarin.Forms.TabbedPage {
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
+        private global::Xamarin.Forms.Entry entryRubricName;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
+        private global::Xamarin.Forms.Entry entryMinScore;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
+        private global::Xamarin.Forms.Entry entryMaxScore;
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
+        private global::Xamarin.Forms.StackLayout layoutMain;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private void InitializeComponent() {
             global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(CreateRubricPage));
+            entryRubricName = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Entry>(this, "entryRubricName");
+            entryMinScore = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Entry>(this, "entryMinScore");
+            entryMaxScore = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.Entry>(this, "entryMaxScore");
+            layoutMain = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "layoutMain");
         }
     }
 }

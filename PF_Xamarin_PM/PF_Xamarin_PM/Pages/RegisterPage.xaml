@@ -3,13 +3,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PF_Xamarin_PM.RegisterPage">
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical">
-            <Entry x:Name="entryName" Placeholder="Your Name"></Entry>
-            <Entry x:Name="entryLastName" Placeholder="Your Last Name"></Entry>
-            <Entry x:Name="entryEmail" Placeholder="Email"></Entry>
-            <Entry x:Name="entryPassword"></Entry>
-            <Entry x:Name="entryConfirmPassword"></Entry>
-            <Button Text="Register" Clicked="Register"></Button>
+        <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand">
+            <StackLayout x:Name="layoutMain" Orientation="Vertical" Margin="15" VerticalOptions="FillAndExpand">
+                <Entry x:Name="entryName" Placeholder="Nombre"></Entry>
+                <Entry x:Name="entryLastName" Placeholder="Apellido"></Entry>
+                <Entry x:Name="entryEmail" Placeholder="Email"></Entry>
+                <Entry x:Name="entryPassword" IsPassword="True" Placeholder="Contraseña"></Entry>
+                <Entry x:Name="entryConfirmPassword" IsPassword="True" Placeholder="Confirme la contraseña"></Entry>
+                <Button Text="Registrarse" Clicked="Register"></Button>
+            </StackLayout>
+            <ActivityIndicator x:Name="loadIndicator" VerticalOptions="CenterAndExpand" Color="DodgerBlue"></ActivityIndicator>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

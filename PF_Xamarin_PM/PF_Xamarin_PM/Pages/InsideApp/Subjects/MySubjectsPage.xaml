@@ -10,7 +10,10 @@
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" Padding="15">
             <Label HorizontalOptions="CenterAndExpand" FontSize="Large" TextColor="Red"></Label>
-            <ListView ItemsSource="{Binding}" ItemTapped="ShowSubjectInfo">
+            <ListView x:Name="listviewMySubjects" ItemTapped="ShowSubjectInfo"
+                      IsPullToRefreshEnabled="True"
+                      RefreshCommand="{Binding RefreshCommand}"
+                      IsRefreshing="{Binding IsRefreshing}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

@@ -63,15 +63,24 @@ namespace PF_Xamarin_PM
         {
             CreateRubricPage page = new CreateRubricPage();
             page.FinishActivity += OnFinishCreateRubric;
-            Navigation.PushAsync(page);
+            Navigation.PushModalAsync(new NavigationPage(page));
         }
 
         private void OnFinishCreateRubric(object sender, ReturnInfo<Rubric> e)
         {
             if(e.Result == ReturnResult.Successful)
             {
-                LoginPage.LoggedUser.AddRubric(e.Data);
+                //LoginPage.LoggedUser.AddRubric(e.Data);
+                rubrics.Add(e.Data);
             }
+        }
+
+        public void ShowRubricInfo(object sender, ItemTappedEventArgs e)
+        {
+            Rubric rubric = e.Item as Rubric;
+            RubricPage page = new RubricPage(rubric);
+            Navigation.PushAsync(page);
+            (sender as ListView).SelectedItem = null;
         }
     }
 }

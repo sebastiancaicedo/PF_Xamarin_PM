@@ -4,7 +4,7 @@
              x:Class="PF_Xamarin_PM.CalificationsPage">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Editar"></ToolbarItem>
+        <ToolbarItem Text="Editar" Clicked="EditEvaluation"></ToolbarItem>
     </ContentPage.ToolbarItems>
     
     <ContentPage.Content>

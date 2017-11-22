@@ -1,62 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace PF_Xamarin_PM
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MySubjectsPage : ContentPage
 	{
-        private IList<Subject> subjects = new ObservableCollection<Subject>();
+        private IList<Subject> Subjects { get; set; } = new ObservableCollection<Subject>();
+        private bool appeared = false;
+        private bool isRefreshing;
 
-		public MySubjectsPage ()
+        public bool IsRefreshing
+        {
+            get
+            {
+                return isRefreshing;
+            }
+            set
+            {
+                isRefreshing = value;
+                OnPropertyChanged(nameof(IsRefreshing));
+            }
+        }
+
+        public ICommand RefreshCommand
+        {
+            get
+            {
+                return new Command(async () =>
+                {
+                    LoginPage.LoggedUser = await FirebaseHelper.GetProfessorById(LoginPage.Auth.User.LocalId);
+                    listviewMySubjects.ItemsSource = null;
+                    Subjects = await FirebaseHelper.GetSubjectsByIds(LoginPage.LoggedUser.SubjectsKeys);
+                    listviewMySubjects.ItemsSource = Subjects;
+                    IsRefreshing = false;
+                });
+            }
+        }
+
+
+        public MySubjectsPage ()
 		{
-            Title = "My Subjects";
+            Title = "Mis Asignaturas";
 			InitializeComponent ();
-            BindingContext = subjects;
+            BindingContext = this;
+            IsRefreshing = LoginPage.LoggedUser.SubjectsKeys.Count > 0 ? true : false;
         }
 
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            await getSubjects(LoginPage.LoggedUser.SubjectsKeys);
-        }
-
-        private async Task<bool> getSubjects(List<string> subjectsKeys)
-        {
-            if (subjectsKeys.Count > 0)
+            if (!appeared)
             {
                 try
                 {
-                    var items = await FirebaseHelper.firebaseDBClient
-                    .Child("subjects")
-                    .OnceAsync<Subject>();
-
-                    subjects.Clear();
-
-                    foreach (var item in items)
-                    {
-                        if (subjectsKeys.Contains(item.Key))
-                        {
-                            //la asignatura pertenece a el profesor
-                            Subject subject = item.Object;
-                            subject.SetUId(item.Key);
-                            subjects.Add(subject);
-                        }
-                    }
+                    Subjects = await FirebaseHelper.GetSubjectsByIds(LoginPage.LoggedUser.SubjectsKeys);
+                    listviewMySubjects.ItemsSource = Subjects;
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    await DisplayAlert("Error", "Problema al traer las asignaturas de firebase: "+ex, "OK");
+                    //throw;
                 }
+                IsRefreshing = false;
+                appeared = true;
+                //await getSubjects(LoginPage.LoggedUser.SubjectsKeys);
             }
-            return true;
         }
 
         public void CreateNewSubject(object sender, EventArgs e)
@@ -70,8 +83,16 @@ namespace PF_Xamarin_PM
         {
             if (e.Result == ReturnResult.Successful)
             {
-                LoginPage.LoggedUser.AddSubject(e.Data);
-                //subjects.Add(e.Data);
+                try
+                {
+                    LoginPage.LoggedUser.AddSubject(e.Data);
+                    Subjects.Add(e.Data);
+                }
+                catch (Exception ex)
+                {
+                    DisplayAlert("Error", "Problema con agregar asignatura : " + ex, "OK");
+                    //throw;
+                }
             }
         }
 

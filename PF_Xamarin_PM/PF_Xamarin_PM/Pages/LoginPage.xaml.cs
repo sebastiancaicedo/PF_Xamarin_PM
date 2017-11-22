@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Firebase.Xamarin.Auth;
+using System;
 using Xamarin.Forms;
-using Firebase.Xamarin.Auth;
-using System.Diagnostics;
-using Firebase.Xamarin.Database.Query;
 
 namespace PF_Xamarin_PM
 {
-	public partial class LoginPage : ContentPage
+    public partial class LoginPage : ContentPage
 	{
-        public static FirebaseAuth auth { get; private set; }
-        public static Professor LoggedUser { get; private set; }
+        public static FirebaseAuth Auth { get; private set; }
+        public static Professor LoggedUser { get; set; }
 
 		public LoginPage()
 		{
-            Title = "Sign In";
+            Title = "Iniciar Sesión";
 			InitializeComponent();
 		}
 
@@ -46,7 +40,7 @@ namespace PF_Xamarin_PM
                 RegisterPage.ReturnData data = e.Data;
                 try
                 {
-                    auth = await FirebaseHelper.authProvider.CreateUserWithEmailAndPasswordAsync(data.ProfessorInfo.Email, data.Password);
+                    Auth = await FirebaseHelper.authProvider.CreateUserWithEmailAndPasswordAsync(data.ProfessorInfo.Email, data.Password);
                     //guardamos el usuario en la base de datos
                     data.ProfessorInfo.SaveThisUserOnDB();
                     LoggedUser = data.ProfessorInfo;
@@ -54,7 +48,7 @@ namespace PF_Xamarin_PM
                 }
                 catch (Exception ex)
                 {
-                    await DisplayAlert("Error", "That email exist already", "OK");
+                    await DisplayAlert("Error", "El email ya existe, :"+ex, "OK");
                     //throw ex;
                 }
             }
@@ -67,6 +61,7 @@ namespace PF_Xamarin_PM
         /// <param name="e"></param>
         public async void LogIn(object sender, EventArgs e)
         {
+            StartLoadingIndicator();
             if (String.IsNullOrEmpty(entryEmail.Text) && String.IsNullOrEmpty(entryPassword.Text))
             {
                 entryEmail.Text = "admin@uninorte.edu.co";
@@ -76,34 +71,29 @@ namespace PF_Xamarin_PM
             {
                 try
                 {
-                    auth = await FirebaseHelper.authProvider.SignInWithEmailAndPasswordAsync(entryEmail.Text, entryPassword.Text);
-                    var items = await FirebaseHelper.firebaseDBClient
-                         .Child("professors")
-                         .OnceAsync<Professor>();
-                    
-
-                    foreach (var item in items)
+                    Auth = await FirebaseHelper.authProvider.SignInWithEmailAndPasswordAsync(entryEmail.Text, entryPassword.Text);
+                    LoggedUser = await FirebaseHelper.GetProfessorById(Auth.User.LocalId);
+                    if (LoggedUser == null)
                     {
-                        if (auth.User.LocalId == item.Key)
-                        {
-                            LoggedUser = item.Object;
-                            break;
-                        }
+                        throw new Exception();
                     }
-
-                    ShowHomePage();
+                    else
+                    {
+                        ShowHomePage();
+                    }
 
                 }
                 catch (Exception ex)
                 {
-                    await DisplayAlert("Error", "Credentials are not registered in data base", "OK");
-                    await DisplayAlert("Error", ex.Message, "OK");
+                    StopLoadingIndicator();
+                    await DisplayAlert("Error", "No es posible iniciar sesión :"+ex, "OK");
                     //throw ex;
                 }
             }
             else
             {
-                await DisplayAlert("Error", "Email or password field is empty", "OK");
+                StopLoadingIndicator();
+                await DisplayAlert("Error", "Uno o mas campos vacios", "OK");
             }
         }
 
@@ -112,12 +102,31 @@ namespace PF_Xamarin_PM
         /// </summary>
         private void ShowHomePage()
         {
-            //Toda la logica del login
-            Debug.WriteLine("FederatedID: " + auth.User.FederatedId);
-            Debug.WriteLine("Token: " + auth.FirebaseToken);
-            Debug.WriteLine("Local ID: "+auth.User.LocalId);
-            Debug.WriteLine("email: " + auth.User.Email);
+            StopLoadingIndicator();
             Application.Current.MainPage = new NavigationPage(new HomePage());
+        }
+
+        /// <summary>
+        /// Muestra el indicador de carga y oculta los demas Views
+        /// </summary>
+        private void StartLoadingIndicator()
+        {
+            loadIndicator.IsRunning = true;
+            layoutTop.IsVisible = false;
+            layoutBottom.IsVisible = false;
+        }
+
+        /// <summary>
+        /// Detiene el indicador de carga y muestra los demas Views
+        /// </summary>
+        private void StopLoadingIndicator()
+        {
+            if (loadIndicator.IsRunning)
+            {
+                loadIndicator.IsRunning = false;
+                layoutTop.IsVisible = true;
+                layoutBottom.IsVisible = true;
+            }
         }
     }
 }

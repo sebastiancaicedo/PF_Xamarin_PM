@@ -9,39 +9,117 @@ using Firebase.Xamarin.Database;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using System.Windows.Input;
 
 namespace PF_Xamarin_PM
 {
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class SubjectPage : TabbedPage
 	{
-        private Subject subjectToShow;
-        private IList<Student> students = new ObservableCollection<Student>();
-        private IList<Evaluation> evaluations = new ObservableCollection<Evaluation>();
+        private Subject SubjectToShow { get; set; }
+        private IList<Student> Students { get; set; } = new ObservableCollection<Student>();
+        private IList<Evaluation> Evaluations { get; set; } = new ObservableCollection<Evaluation>();
+        private bool appeared = false;
+        private bool studsIsRefreshing;
+        private bool evalsIsRefreshing;
+
+        public bool StudsIsRefreshing
+        {
+            get
+            {
+                return studsIsRefreshing;
+            }
+            set
+            {
+                studsIsRefreshing = value;
+                OnPropertyChanged(nameof(StudsIsRefreshing));
+            }
+        }
+
+        public bool EvalsIsRefreshing
+        {
+            get
+            {
+                return evalsIsRefreshing;
+            }
+            set
+            {
+                evalsIsRefreshing = value;
+                OnPropertyChanged(nameof(EvalsIsRefreshing));
+            }
+        }
+
+        public ICommand StudsRefreshCommand
+        {
+            get
+            {
+                return new Command(async () =>
+                {
+                    SubjectToShow = await FirebaseHelper.GetSubjectById(SubjectToShow.GetUId());
+                    listviewStudents.ItemsSource = null;
+                    Students = await FirebaseHelper.GetStudentsByIds(SubjectToShow.StudentsKeys);
+                    listviewStudents.ItemsSource = Students;
+                    StudsIsRefreshing = false;
+                });
+            }
+        }
+
+        public ICommand EvalsRefreshCommand
+        {
+            get
+            {
+                return new Command(async () =>
+                {
+                    //LoginPage.LoggedUser = await FirebaseHelper.GetProfessorById(LoginPage.Auth.User.LocalId);
+                    SubjectToShow = await FirebaseHelper.GetSubjectById(SubjectToShow.GetUId());
+                    listviewEvaluations.ItemsSource = null;
+                    Evaluations = await FirebaseHelper.GetEvaluationsByIds(SubjectToShow.EvaluationsKeys);
+                    listviewEvaluations.ItemsSource = Evaluations;
+                    EvalsIsRefreshing = false;
+                });
+            }
+        }
 
         public SubjectPage(Subject subject)
         {
-            this.subjectToShow = subject;
+            this.SubjectToShow = subject;
             Title = subject.Name;
             InitializeComponent();
-            listviewStudents.ItemsSource = students;
-            listviewEvaluations.ItemsSource = evaluations;
+            BindingContext = this;
+            StudsIsRefreshing = SubjectToShow.StudentsKeys.Count > 0 ? true : false;
+            EvalsIsRefreshing = SubjectToShow.EvaluationsKeys.Count > 0 ? true : false;
         }
 
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            await getStudentsAsync(subjectToShow.StudentsKeys);
-            await getEvaluations(subjectToShow.EvaluationsKeys);
+            if (!appeared)
+            {
+                try
+                {
+                    Students = await FirebaseHelper.GetStudentsByIds(SubjectToShow.StudentsKeys);
+                    listviewStudents.ItemsSource = Students;
+                    Evaluations = await FirebaseHelper.GetEvaluationsByIds(SubjectToShow.EvaluationsKeys);
+                    listviewEvaluations.ItemsSource = Evaluations;
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Error", "Problema al traer los estudiantes o las evaluaciones, :" + ex, "OK");
+                    //throw;
+                }
+                EvalsIsRefreshing = false;
+                StudsIsRefreshing = false;
+                appeared = true;
+            }
         }
 
-        public async Task<int> getStudentsAsync(List<string> studentsKeys)
+        /*public async Task<int> getStudentsAsync(List<string> studentsKeys)
         {
             if (studentsKeys.Count > 0)
             {
                 try
                 {
-                    students.Clear();
+                    Students.Clear();
                     for (int index = 0; index < studentsKeys.Count; index++)
                     {
                         //System.Diagnostics.Debug.WriteLine("STUDENT KEY: " + studentsKeys[index]);
@@ -55,7 +133,7 @@ namespace PF_Xamarin_PM
                             {
                                 Student student = item.Object;
                                 student.SetKey(item.Key);
-                                students.Add(student);
+                                Students.Add(student);
                             }
                         }
 
@@ -69,16 +147,16 @@ namespace PF_Xamarin_PM
                 }
             }
             return 0;      
-        }
+        }*/
 
-        public async Task<int> getEvaluations(List<string> evaluationKeys)
+        /*public async Task<int> getEvaluations(List<string> evaluationKeys)
         {
-            if(subjectToShow.EvaluationsKeys.Count > 0)
+            if(SubjectToShow.EvaluationsKeys.Count > 0)
             {
                 try
                 {
-                    evaluations.Clear();
-                    for (int index = 0; index < subjectToShow.EvaluationsKeys.Count; index++)
+                    Evaluations.Clear();
+                    for (int index = 0; index < SubjectToShow.EvaluationsKeys.Count; index++)
                     {
                         //System.Diagnostics.Debug.WriteLine("STUDENT KEY: " + studentsKeys[index]);
                         var items = await FirebaseHelper.firebaseDBClient
@@ -87,11 +165,11 @@ namespace PF_Xamarin_PM
 
                         foreach (var item in items)
                         {
-                            if (subjectToShow.EvaluationsKeys[index] == item.Key)
+                            if (SubjectToShow.EvaluationsKeys[index] == item.Key)
                             {
                                 Evaluation evaluation = item.Object;
                                 evaluation.SetUid(item.Key);
-                                evaluations.Add(evaluation);
+                                Evaluations.Add(evaluation);
                             }
                         }
 
@@ -103,7 +181,7 @@ namespace PF_Xamarin_PM
                 }
             }
             return 0;
-        }
+        }*/
 
         public void AddNewStudent(object sender, EventArgs e)
         {
@@ -114,37 +192,51 @@ namespace PF_Xamarin_PM
 
         private void OnFinishAddStudent(object sender, ReturnInfo<Student> e)
         {
-            Student student = e.Data;
-            subjectToShow.AddStudent(student);
-            //students.Add(student);
+            if (e.Result == ReturnResult.Successful)
+            {
+                try
+                {
+                    Student student = e.Data;
+                    SubjectToShow.AddStudent(student);
+                    Students.Add(student);
+                }
+                catch (Exception ex)
+                {
+                    DisplayAlert("Error", "Error al agregar studiante, :" + ex, "OK");
+                    //throw;
+                }
+            }
             //subjectToShow.AddStudent(student);
         }
 
         public void MakeNewEvaluation(object sender, EventArgs e)
         {
-            MakeEvaluationPage page = new MakeEvaluationPage(subjectToShow, students);
+            MakeEvaluationPage page = new MakeEvaluationPage(SubjectToShow, Students);
             page.FinishActivity += OnFinishEvaluation;
             Navigation.PushAsync(page);
         }
 
         private void OnFinishEvaluation(object sender, ReturnInfo<Evaluation> e)
         {
-            if (e.Result == ReturnResult.UnCompleted)
+            if (e.Result == ReturnResult.Successful || e.Result == ReturnResult.UnCompleted)
             {
-                subjectToShow.SaveSubjectOnDB();
-                evaluations.Add(e.Data);
-            }
-            else
-                if (e.Result == ReturnResult.Successful)
-            {
-                subjectToShow.SaveSubjectOnDB();
-                evaluations.Add(e.Data);
+                Evaluations.Add(e.Data);
             }
             else
             {
-                subjectToShow.EvaluationsKeys.Remove(e.Data.GetUid());
-                subjectToShow.SaveSubjectOnDB();
+                SubjectToShow.EvaluationsKeys.Remove(e.Data.GetUid());
             }
+
+            try
+            {
+                SubjectToShow.SaveSubjectOnDB();
+            }
+            catch (Exception ex)
+            {
+                DisplayAlert("Error", "Error al agregar la evaluacion, :" + ex, "OK");
+                //throw;
+            }
+            (sender as MakeEvaluationPage).FinishActivity -= OnFinishEvaluation;
         }
 
         public void ShowStudentInfo(object sender, ItemTappedEventArgs e)
@@ -158,7 +250,7 @@ namespace PF_Xamarin_PM
         public void ShowEvaluationInfo(object sender, ItemTappedEventArgs e)
         {
             Evaluation evaluation = e.Item as Evaluation;
-            CalificationsPage page = new CalificationsPage(evaluation, students);
+            CalificationsPage page = new CalificationsPage(evaluation, Students);
             Navigation.PushAsync(page);
             (sender as ListView).SelectedItem = null;
         }

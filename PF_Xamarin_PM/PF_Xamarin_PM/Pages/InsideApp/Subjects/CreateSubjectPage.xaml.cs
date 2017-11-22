@@ -26,7 +26,7 @@ namespace PF_Xamarin_PM
             string name = entryName.Text;
             if (!String.IsNullOrEmpty(name))
             {
-                Subject subject = new Subject(name, LoginPage.auth.User.LocalId);
+                Subject subject = new Subject(name, LoginPage.Auth.User.LocalId);
                 FinishActivity(this, new ReturnInfo<Subject>(ReturnResult.Successful, subject));
                 Navigation.PopAsync();
             }

@@ -12,16 +12,16 @@ namespace PF_Xamarin_PM {
     
     
     [global::Xamarin.Forms.Xaml.XamlFilePathAttribute("C:\\Users\\lusec\\source\\repos\\PF_Xamarin_PM\\PF_Xamarin_PM\\PF_Xamarin_PM\\Pages\\Insid" +
-        "eApp\\Subjects\\MySubjectsPage.xaml")]
-    public partial class MySubjectsPage : global::Xamarin.Forms.ContentPage {
+        "eApp\\Rubrics\\RubricPage.xaml")]
+    public partial class RubricPage : global::Xamarin.Forms.TabbedPage {
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
-        private global::Xamarin.Forms.ListView listviewMySubjects;
+        private global::Xamarin.Forms.StackLayout layoutMain;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Xamarin.Forms.Build.Tasks.XamlG", "0.0.0.0")]
         private void InitializeComponent() {
-            global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(MySubjectsPage));
-            listviewMySubjects = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.ListView>(this, "listviewMySubjects");
+            global::Xamarin.Forms.Xaml.Extensions.LoadFromXaml(this, typeof(RubricPage));
+            layoutMain = global::Xamarin.Forms.NameScopeExtensions.FindByName<global::Xamarin.Forms.StackLayout>(this, "layoutMain");
         }
     }
 }

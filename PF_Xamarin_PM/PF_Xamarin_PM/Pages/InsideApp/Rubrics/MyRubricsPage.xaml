@@ -8,7 +8,7 @@
     
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" Padding="15">
-            <ListView ItemsSource="{Binding}">
+            <ListView ItemsSource="{Binding}" ItemTapped="ShowRubricInfo">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextCell Text="{Binding Name}"></TextCell>

@@ -87,6 +87,8 @@ namespace PF_Xamarin_PM
         {
             FinishActivity(this, new ReturnInfo<Evaluation>(e.Result, e.Data));
             Navigation.PopAsync();
+            (sender as EvaluationPage).FinishActivity -= OnFinishEvaluation;
+            e.Data.EvaluationSaved -= OnEvaluationSaved;
         }
     }
 }
