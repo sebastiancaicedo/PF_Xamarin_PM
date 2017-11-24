@@ -8,19 +8,21 @@
     </ContentPage.ToolbarItems>
 
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical" Padding="15">
+        <StackLayout Orientation="Vertical" Margin="15">
             <Label HorizontalOptions="CenterAndExpand" FontSize="Large" TextColor="Red"></Label>
             <ListView x:Name="listviewMySubjects" ItemTapped="ShowSubjectInfo"
+                      HasUnevenRows="True"
                       IsPullToRefreshEnabled="True"
                       RefreshCommand="{Binding RefreshCommand}"
                       IsRefreshing="{Binding IsRefreshing}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell>
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                <Image Source="ic_custom_asignaturas.png" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-                                <Label Text="{Binding Name}" FontSize="Large" HorizontalOptions="StartAndExpand"
-                                       TextColor="Red" VerticalTextAlignment="Center"></Label>
+                        <ViewCell Height="70">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <Image Source="ic_custom_asignaturas.png" VerticalOptions="CenterAndExpand"></Image>
+                                <Label Text="{Binding Name}" TextColor="Red" FontAttributes="Bold" FontSize="Large"
+                                       Margin="15,0,0,0" VerticalTextAlignment="Center"
+                                       VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand"></Label>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>

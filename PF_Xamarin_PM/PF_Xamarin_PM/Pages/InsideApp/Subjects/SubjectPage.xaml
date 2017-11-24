@@ -4,24 +4,24 @@
              x:Class="PF_Xamarin_PM.SubjectPage">
 
 
-    <ContentPage Title="Students">
-
+    <ContentPage Title="Estudiantes" Icon="ic_custom_estudiante.png">
         <ContentPage.ToolbarItems>
             <ToolbarItem Icon="ic_custom_agregar.png" Clicked="AddNewStudent"></ToolbarItem>
         </ContentPage.ToolbarItems>
         
         <ContentPage.Content>
-            <StackLayout Orientation="Vertical" Padding="15">
-                <ListView x:Name="listviewStudents" ItemTapped="ShowStudentInfo" HasUnevenRows="true"
+            <StackLayout Orientation="Vertical" Margin="15">
+                <ListView x:Name="listviewStudents"
+                          HasUnevenRows="true"
                           IsPullToRefreshEnabled="True"
-                      RefreshCommand="{Binding StudsRefreshCommand}"
-                      IsRefreshing="{Binding StudsIsRefreshing}">
+                          RefreshCommand="{Binding StudsRefreshCommand}"
+                          IsRefreshing="{Binding StudsIsRefreshing}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell Height="70">
                                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                                     <Image Source="ic_custom_estudiante.png" VerticalOptions="CenterAndExpand"></Image>
-                                    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand">
+                                    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" Margin="15,0,0,0">
                                         <Label Text="{Binding FullName}" TextColor="Red" FontSize="Large"></Label>
                                         <Label Text="{Binding Email}" FontSize="Small"></Label>
                                     </StackLayout>
@@ -34,7 +34,7 @@
         </ContentPage.Content>
     </ContentPage>
 
-    <ContentPage Title="Evaluations">
+    <ContentPage Icon="ic_custom_evaluaciones.png" Title="Evaluaciones">
         <ContentPage.ToolbarItems>
             <ToolbarItem Icon="ic_custom_agregar" Clicked="MakeNewEvaluation"></ToolbarItem>
         </ContentPage.ToolbarItems>
@@ -42,16 +42,18 @@
         <ContentPage.Content>
             <StackLayout Orientation="Vertical" Padding="15">
                 <ListView x:Name="listviewEvaluations" ItemTapped="ShowEvaluationInfo"
+                          HasUnevenRows="True"
                           IsPullToRefreshEnabled="True"
-                      RefreshCommand="{Binding EvalsRefreshCommand}"
-                      IsRefreshing="{Binding EvalsIsRefreshing}">
+                          RefreshCommand="{Binding EvalsRefreshCommand}"
+                          IsRefreshing="{Binding EvalsIsRefreshing}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <ViewCell>
+                            <ViewCell Height="70">
                                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                                    <Image Source="ic_custom_evaluaciones.png"></Image>
-                                    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand">
-                                        <Label Text="{Binding Name}" TextColor="Red" FontSize="Medium"></Label>
+                                    <Image Source="ic_custom_evaluaciones.png" VerticalOptions="CenterAndExpand"></Image>
+                                    <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" Margin="15,0,0,0">
+                                        <Label Text="{Binding Name}" TextColor="Red" FontSize="Large"></Label>
+                                        <Label Text="{Binding Status}" FontAttributes="Italic" FontSize="Small"></Label>
                                     </StackLayout>
                                 </StackLayout>
                             </ViewCell>

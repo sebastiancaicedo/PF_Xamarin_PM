@@ -33,11 +33,19 @@ namespace PF_Xamarin_PM
             {
                 return new Command(async () =>
                 {
-                    LoginPage.LoggedUser = await FirebaseHelper.GetProfessorById(LoginPage.Auth.User.LocalId);
-                    listviewMySubjects.ItemsSource = null;
-                    Subjects = await FirebaseHelper.GetSubjectsByIds(LoginPage.LoggedUser.SubjectsKeys);
-                    listviewMySubjects.ItemsSource = Subjects;
-                    IsRefreshing = false;
+                    try
+                    {
+                        LoginPage.LoggedUser = await FirebaseHelper.GetProfessorById(LoginPage.Auth.User.LocalId);
+                        listviewMySubjects.ItemsSource = null;
+                        Subjects = await FirebaseHelper.GetSubjectsByIds(LoginPage.LoggedUser.SubjectsKeys);
+                        listviewMySubjects.ItemsSource = Subjects;
+                        IsRefreshing = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        await DisplayAlert("Error", "Problema al traer las asignaturas, : " + ex, "OK");
+                        //throw;
+                    }
                 });
             }
         }

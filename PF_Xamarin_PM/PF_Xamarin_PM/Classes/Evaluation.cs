@@ -16,7 +16,10 @@ namespace PF_Xamarin_PM
         public string Name { get; private set; }
         public string SubjectKey { get; private set; }
         public string RubricKey { get; private set; }
-        public bool IsCompleted { get { return checkForCompletion(); } }
+        private bool isCompleted;
+        public bool IsCompleted { get { CheckForCompletion(); return isCompleted; } private set { isCompleted = value; } }
+        private string status;
+        public string Status { get { GetEvaluationStatus(); return status; } private set { status = value; } }
         public IList<Calification> Califications { get; private set; } = new ObservableCollection<Calification>();
 
         private List<Picker> ElementsPickers { get; set; } = new List<Picker>();
@@ -33,11 +36,13 @@ namespace PF_Xamarin_PM
         }
 
         [Newtonsoft.Json.JsonConstructor]
-        public Evaluation(string name, string subjectKey, string rubricKey, IList<Calification> califications)
+        public Evaluation(string name, string subjectKey, string rubricKey, bool isCompleted, string status, IList<Calification> califications)
         {
             Name = name;
             SubjectKey = subjectKey;
             RubricKey = rubricKey;
+            IsCompleted = isCompleted;
+            Status = status;
             Califications = califications;
         }
 
@@ -51,16 +56,21 @@ namespace PF_Xamarin_PM
             Uid = key;
         }
 
-        private bool checkForCompletion()
+        private void CheckForCompletion()
         {
             for (int index = 0; index < ElementsPickers.Count; index++)
             {
                 if(ElementsPickers[index].SelectedIndex == -1)
                 {
-                    return false;
+                    isCompleted = false;
                 }
             }
-            return true;
+            isCompleted = true;
+        }
+
+        private void GetEvaluationStatus()
+        {
+            status = isCompleted ? "Completa" : "Incompleta";
         }
 
         public bool CheckIfSaved()
@@ -78,25 +88,16 @@ namespace PF_Xamarin_PM
             return WasSavedOnce;
         }
 
-        public void SaveEvaluationOnDB()
+        public async void SaveEvaluationOnDB()
         {
-            try
-            {
-                FirebaseHelper.firebaseDBClient
-                    .Child("evaluations")
-                    .Child(this.Uid)
-                    .PutAsync<Evaluation>(this);
+            await FirebaseHelper.SaveEvaluationOnDB(this);
 
-                ChangesSaved = true;
-                ToolbarItemIndicator.Text = "Saved";
-                if (!WasSavedOnce) {
-                    WasSavedOnce = true;
-                    EvaluationSaved(this, EventArgs.Empty);
-                }
-
-            }catch(Exception ex)
+            ChangesSaved = true;
+            ToolbarItemIndicator.Text = "Saved";
+            if (!WasSavedOnce)
             {
-                throw ex;
+                WasSavedOnce = true;
+                EvaluationSaved(this, EventArgs.Empty);
             }
         }
 

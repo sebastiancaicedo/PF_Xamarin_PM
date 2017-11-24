@@ -1,62 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace PF_Xamarin_PM
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class MyRubricsPage : ContentPage
 	{
-        public IList<Rubric> rubrics = new ObservableCollection<Rubric>();
+        private IList<Rubric> Rubrics { get; set; } = new ObservableCollection<Rubric>();
+        private bool appeared = false;
+        private bool isRefreshing;
 
-		public MyRubricsPage ()
+        public bool IsRefreshing
+        {
+            get
+            {
+                return isRefreshing;
+            }
+            set
+            {
+                isRefreshing = value;
+                OnPropertyChanged(nameof(IsRefreshing));
+            }
+        }
+
+        public ICommand RefreshCommand
+        {
+            get
+            {
+                return new Command(async () =>
+                {
+                    try
+                    {
+                        LoginPage.LoggedUser = await FirebaseHelper.GetProfessorById(LoginPage.Auth.User.LocalId);
+                        listviewRubrics.ItemsSource = null;
+                        Rubrics = await FirebaseHelper.GetRubricsByIds(LoginPage.LoggedUser.RubricsKeys);
+                        listviewRubrics.ItemsSource = Rubrics;
+                        IsRefreshing = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        await DisplayAlert("Error", "Problema al traer las rubricas, :" + ex, "OK");
+                        //throw;
+                    }                    
+                });
+            }
+        }
+
+        public MyRubricsPage ()
 		{
-            Title = "My Rubrics";
-            BindingContext = rubrics;
+            Title = "Mis Rubricas";
+            BindingContext = this;
 			InitializeComponent ();
+            IsRefreshing = LoginPage.LoggedUser.RubricsKeys.Count > 0 ? true : false;
 		}
 
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            await getRubrics(LoginPage.LoggedUser.RubricsKeys);
-        }
-
-        private async Task<bool> getRubrics(List<string> rubricKeys)
-        {
-            if (rubricKeys.Count > 0)
+            if (!appeared)
             {
                 try
                 {
-                    var items = await FirebaseHelper.firebaseDBClient
-                    .Child("rubrics")
-                    .OnceAsync<Rubric>();
-
-                    rubrics.Clear();
-
-                    foreach (var item in items)
-                    {
-                        if (rubricKeys.Contains(item.Key))
-                        {
-                            //la asignatura pertenece a el profesor
-                            Rubric rubric = item.Object;
-                            rubric.SetUid(item.Key);
-                            rubrics.Add(rubric);
-                        }
-                    }
+                    Rubrics = await FirebaseHelper.GetRubricsByIds(LoginPage.LoggedUser.RubricsKeys);
+                    listviewRubrics.ItemsSource = Rubrics;
                 }
                 catch (Exception ex)
                 {
-                    throw ex;
+                    await DisplayAlert("Error", "No se pudo traer las rubricas, : " + ex, "OK");
+                    //throw;
                 }
+                appeared = true;
+                IsRefreshing = false;
             }
-            return true;
         }
 
         public void CreateNewRubric(object sender, EventArgs e)
@@ -70,8 +89,7 @@ namespace PF_Xamarin_PM
         {
             if(e.Result == ReturnResult.Successful)
             {
-                //LoginPage.LoggedUser.AddRubric(e.Data);
-                rubrics.Add(e.Data);
+                Rubrics.Add(e.Data);
             }
         }
 

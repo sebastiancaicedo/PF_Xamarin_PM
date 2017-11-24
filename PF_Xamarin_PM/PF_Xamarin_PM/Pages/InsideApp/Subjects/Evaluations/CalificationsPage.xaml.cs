@@ -16,9 +16,9 @@ namespace PF_Xamarin_PM
 		{
             this.Evaluation = evaluation;
             Students = students;
-            Title = evaluation.Name;
+            Title = "Evaluación: "+evaluation.Name;
 			InitializeComponent ();
-            listviewCalifications.ItemsSource = evaluation.Califications;            
+            listviewCalifications.ItemsSource = evaluation.Califications;          
 		}
 
         public async void EditEvaluation (object sender, EventArgs e)

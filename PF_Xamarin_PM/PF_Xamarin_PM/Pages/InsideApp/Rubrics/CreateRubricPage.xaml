@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PF_Xamarin_PM.CreateRubricPage">
 
-    <ContentPage Title="Información Basica">
+    <ContentPage Title="Información Basica" Icon="ic_custom_informacion.png">
         <ContentPage.Content>
             <StackLayout Orientation="Vertical" Margin="15">
                 <Label Text="Nombre de la Rubrica"></Label>
@@ -18,7 +18,7 @@
         </ContentPage.Content>
     </ContentPage>
 
-    <ContentPage Title="Estructura">
+    <ContentPage Title="Estructura" Icon="ic_custom_rubricas.png">
 
         <ContentPage.ToolbarItems>
             <ToolbarItem Icon="ic_custom_guardar.png" Clicked="SaveRubric"></ToolbarItem>

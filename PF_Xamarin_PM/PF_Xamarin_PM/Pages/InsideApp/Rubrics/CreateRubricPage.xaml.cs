@@ -15,7 +15,7 @@ namespace PF_Xamarin_PM
 
         public event EventHandler<ReturnInfo<Rubric>> FinishActivity;
 
-        private Rubric rubricToCreate;
+        private Rubric rubricToCreate { get; set; }
 
         public CreateRubricPage ()
 		{
@@ -78,11 +78,19 @@ namespace PF_Xamarin_PM
                         string error;
                         if (rubricToCreate.CanBeSaved(out error))
                         {
-                            rubricToCreate.Name = rubricName;
-                            LoginPage.LoggedUser.AddRubric(rubricToCreate);
-                            await DisplayAlert("Completo", "Rubrica creada exitosamente", "Salir");
-                            FinishActivity(this, new ReturnInfo<Rubric>(ReturnResult.Successful, rubricToCreate));
-                            await Navigation.PopModalAsync();
+                            try
+                            {
+                                rubricToCreate.Name = rubricName;
+                                LoginPage.LoggedUser.AddRubric(rubricToCreate);
+                                await DisplayAlert("Completo", "Rubrica creada exitosamente", "Salir");
+                                FinishActivity(this, new ReturnInfo<Rubric>(ReturnResult.Successful, rubricToCreate));
+                                await Navigation.PopModalAsync();
+                            }
+                            catch (Exception ex)
+                            {
+                                await DisplayAlert("Error", "Problema al agregar la asignatura, : " + ex, "OK");
+                                //throw;
+                            }
                         }
                         else
                         {

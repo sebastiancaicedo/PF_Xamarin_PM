@@ -8,9 +8,29 @@
         <ContentPage Title="Master">
             <ContentPage.Content>
                 <StackLayout Orientation="Vertical">
-                    <Label Text="Master Page"></Label>
-                    <Button Text="My Subjects" Clicked="ShowMySubjects"></Button>
-                    <Button Text="My Rubrics" Clicked="ShowMyRubrics"></Button>
+                    <StackLayout Orientation="Vertical" BackgroundColor="#D32F2F" HeightRequest="180">
+                        <StackLayout Orientation="Vertical" Margin="15" VerticalOptions="EndAndExpand">
+                            <Image Source="app_icon.png" HorizontalOptions="Start" WidthRequest="50" HeightRequest="40"></Image>
+                            <Label Text="{Binding FullName}" FontAttributes="Bold" FontSize="Medium" HorizontalOptions="FillAndExpand" VerticalOptions="End"></Label>
+                            <Label Text="{Binding Email}" FontAttributes="Bold" HorizontalOptions="StartAndExpand" VerticalOptions="End"></Label>
+                        </StackLayout>
+                    </StackLayout>
+                    <StackLayout Orientation="Vertical" Margin="0, 5, 0, 0">
+                        <StackLayout Orientation="Vertical" Margin="15" VerticalOptions="FillAndExpand">
+                            <ListView x:Name="listviewMenuItems" ItemTapped="ItemMenuTapped">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <ViewCell>
+                                            <StackLayout Orientation="Horizontal">
+                                                <Image Source="{Binding IconSource}" VerticalOptions="CenterAndExpand"></Image>
+                                                <Label Text="{Binding Title}" Margin="10,0,0,0" HorizontalOptions="StartAndExpand" VerticalTextAlignment="Center" FontAttributes="Bold" FontSize="Medium"></Label>
+                                            </StackLayout>
+                                        </ViewCell>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </StackLayout>
+                    </StackLayout>
                 </StackLayout>
             </ContentPage.Content>
         </ContentPage>

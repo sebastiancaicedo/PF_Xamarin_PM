@@ -17,7 +17,7 @@ namespace PF_Xamarin_PM
 
         public AddStudentPage ()
 		{
-            Title = "Add Student";
+            Title = "Agregar Estudiante";
 			InitializeComponent ();
 		}
 
@@ -36,7 +36,7 @@ namespace PF_Xamarin_PM
                     //verificamos que la cuenta no exista
                     try
                     {
-                        studentAuthInfo = await FirebaseHelper.authProvider.CreateUserWithEmailAndPasswordAsync(email, STUDENT_DEFAULT_PASSWORD);
+                        studentAuthInfo = await FirebaseHelper.AuthProvider.CreateUserWithEmailAndPasswordAsync(email, STUDENT_DEFAULT_PASSWORD);
                         Student student = new Student(name, lastName, studentAuthInfo.User.Email);
                         student.SetKey(studentAuthInfo.User.LocalId);
                         FinishActivity(this, new ReturnInfo<Student>(ReturnResult.Successful, student));
@@ -49,7 +49,7 @@ namespace PF_Xamarin_PM
                         {
                             try
                             {
-                                studentAuthInfo = await FirebaseHelper.authProvider.SignInWithEmailAndPasswordAsync(email, STUDENT_DEFAULT_PASSWORD);
+                                studentAuthInfo = await FirebaseHelper.AuthProvider.SignInWithEmailAndPasswordAsync(email, STUDENT_DEFAULT_PASSWORD);
                                 Student student = await FirebaseHelper.GetStudentById(studentAuthInfo.User.LocalId);
                                 FinishActivity(this, new ReturnInfo<Student>(ReturnResult.Successful, student));//Un completed lo tomaré como usuario existente
                                 await Navigation.PopAsync();

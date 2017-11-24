@@ -5,8 +5,8 @@
     
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" Padding="15">
-            <Entry x:Name="entryName" Placeholder="Subject Name"></Entry>
-            <Button Text="Create And Add" Clicked="AddSubject"></Button>
+            <Entry x:Name="entryName" Placeholder="Nombre de la Asignatura"></Entry>
+            <Button Text="Agregar" BackgroundColor="#D32F2F" TextColor="White" Clicked="AddSubject"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

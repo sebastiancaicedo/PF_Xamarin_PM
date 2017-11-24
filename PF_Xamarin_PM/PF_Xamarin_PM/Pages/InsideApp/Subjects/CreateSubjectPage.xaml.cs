@@ -16,7 +16,7 @@ namespace PF_Xamarin_PM
 
         public CreateSubjectPage ()
 		{
-            Title = "Create new Subject";
+            Title = "Agregar Asignatura";
 			InitializeComponent ();
 		}
 
@@ -32,7 +32,7 @@ namespace PF_Xamarin_PM
             }
             else
             {
-                DisplayAlert("Error", "All fields must be full", "OK");
+                DisplayAlert("Error", "Todos los campos deben ser completados", "OK");
             }
         }
 

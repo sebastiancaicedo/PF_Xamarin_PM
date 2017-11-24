@@ -4,12 +4,12 @@
              x:Class="PF_Xamarin_PM.AddStudentPage">
 
     <ContentPage.Content>
-        <StackLayout Padding="15">
+        <StackLayout Margin="15">
             <StackLayout x:Name="layoutMain" Orientation="Vertical" >
-                <Entry x:Name="entryName" Placeholder="Student Name"></Entry>
-                <Entry x:Name="entryLastName" Placeholder="Student Last Name"></Entry>
+                <Entry x:Name="entryName" Placeholder="Nombre del estudiante"></Entry>
+                <Entry x:Name="entryLastName" Placeholder="Apellido del estudiante"></Entry>
                 <Entry x:Name="entryEmail" Placeholder="example@uninorte.edu.co"></Entry>
-                <Button Text="Create and Add" Clicked="AddStudent"></Button>
+                <Button Text="Agregar" BackgroundColor="#D32F2F" TextColor="White" Clicked="AddStudent"></Button>
             </StackLayout>
             <ActivityIndicator x:Name="loadIndicator" Color="DodgerBlue" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand"></ActivityIndicator>
         </StackLayout>

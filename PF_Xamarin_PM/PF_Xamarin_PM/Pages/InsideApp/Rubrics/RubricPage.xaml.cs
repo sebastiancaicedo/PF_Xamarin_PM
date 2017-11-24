@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace PF_Xamarin_PM
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class RubricPage : TabbedPage
 	{
         private Rubric Rubric { get; set; }
@@ -44,7 +39,7 @@ namespace PF_Xamarin_PM
 
                 StackLayout layoutCatgColumName = new StackLayout { Orientation = StackOrientation.Vertical, HorizontalOptions = LayoutOptions.StartAndExpand };
                 Label labelCatgNameTitle = new Label { Text = "Nombre de la categoria", HorizontalTextAlignment = TextAlignment.Center };
-                Label labelCatgName = new Label { Text = category.Name, FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Medium") };
+                Label labelCatgName = new Label { Text = category.Name, FontAttributes = FontAttributes.Bold, FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Medium") };
                 layoutCatgColumName.Children.Add(labelCatgNameTitle);
                 layoutCatgColumName.Children.Add(labelCatgName);
 
@@ -52,7 +47,7 @@ namespace PF_Xamarin_PM
 
                 StackLayout layoutCatgColumWeigth = new StackLayout { Orientation = StackOrientation.Vertical };
                 Label labelCatgWeigthTitle = new Label { Text = "Peso", HorizontalTextAlignment = TextAlignment.Center };
-                Label labeCatgWeigth = new Label { Text = string.Format("{0}%", category.Weigth), FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Medium") };
+                Label labeCatgWeigth = new Label { Text = string.Format("{0}%", category.Weigth), FontAttributes = FontAttributes.Bold, FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Medium") };
                 layoutCatgColumWeigth.Children.Add(labelCatgWeigthTitle);
                 layoutCatgColumWeigth.Children.Add(labeCatgWeigth);
 
@@ -78,7 +73,7 @@ namespace PF_Xamarin_PM
 
                     StackLayout layoutElemColumName = new StackLayout { Orientation = StackOrientation.Vertical, HorizontalOptions = LayoutOptions.StartAndExpand };
                     Label labelElemNameTitle = new Label { Text = "Nombre del Elemento", HorizontalTextAlignment = TextAlignment.Center };
-                    Label labelElemName = new Label { Text = element.Name, FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Medium") };
+                    Label labelElemName = new Label { Text = element.Name, FontAttributes = FontAttributes.Bold, FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Medium") };
                     layoutElemColumName.Children.Add(labelElemNameTitle);
                     layoutElemColumName.Children.Add(labelElemName);
 
@@ -86,7 +81,7 @@ namespace PF_Xamarin_PM
 
                     StackLayout layoutElemColumWeigth = new StackLayout { Orientation = StackOrientation.Vertical };
                     Label labelElemWeigthTitle = new Label { Text = "Peso", HorizontalTextAlignment = TextAlignment.Center };
-                    Label labeElemWeigth = new Label { Text = string.Format("{0}%", element.Weigth), FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Medium") };
+                    Label labeElemWeigth = new Label { Text = string.Format("{0}%", element.Weigth), FontAttributes = FontAttributes.Bold, FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Medium") };
                     layoutElemColumWeigth.Children.Add(labelElemWeigthTitle);
                     layoutElemColumWeigth.Children.Add(labeElemWeigth);
 
@@ -116,7 +111,7 @@ namespace PF_Xamarin_PM
                     {
                         int levelIndex = element.Levels.IndexOf(level);
                         StackLayout layoutLevel = new StackLayout { Orientation = StackOrientation.Horizontal };
-                        Label labelLevelName = new Label { Text = level.Name, FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Medium"), HorizontalOptions = LayoutOptions.StartAndExpand };
+                        Label labelLevelName = new Label { Text = level.Name, FontAttributes = FontAttributes.Bold, FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Medium"), HorizontalOptions = LayoutOptions.StartAndExpand };
                         Label labelLevelScoreValue = new Label { Text = level.Value.ToString(), FontSize = (double)new FontSizeConverter().ConvertFromInvariantString("Medium") };
                         layoutLevel.Children.Add(labelLevelName);
                         layoutLevel.Children.Add(labelLevelScoreValue);

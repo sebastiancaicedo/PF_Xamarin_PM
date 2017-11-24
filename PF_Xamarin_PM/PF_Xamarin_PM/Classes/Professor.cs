@@ -24,21 +24,7 @@ namespace PF_Xamarin_PM
 
         public async void SaveThisUserOnDB()
         {
-            //try
-            //{
-                //FirebaseHelper.firebaseDBClient
-                //.Child("professors")//tabla profesores
-                //.Child(LoginPage.Auth.User.LocalId)//se usa el id creado por la autenticacion como key tambien
-                ////.WithAuth(token)
-                //.PutAsync(this);
-                await FirebaseHelper.SaveProfessorOnDB(this);
-
-            /*}
-            catch (Exception ex)
-            {
-                throw ex;
-            }*/
-            
+            await FirebaseHelper.SaveProfessorOnDB(this);
         }
 
         /// <summary>
@@ -48,7 +34,6 @@ namespace PF_Xamarin_PM
         /// <param name="subject">La asignatura a agregar</param>
         public void AddSubject(Subject subject)
         {
-            //Subjects.Add(subject);
             SubjectsKeys.Add(subject.GetUId());
             SaveThisUserOnDB();
             subject.SaveSubjectOnDB();
@@ -56,21 +41,9 @@ namespace PF_Xamarin_PM
 
         public void AddRubric(Rubric rubric)
         {
-            try
-            {
-                string rubricKey = rubric.GetUid();
-                RubricsKeys.Add(rubricKey);
-                SaveThisUserOnDB();
-                FirebaseHelper.firebaseDBClient
-                    .Child("rubrics")
-                    .Child(rubricKey)
-                    .PutAsync<Rubric>(rubric);
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
+            RubricsKeys.Add(rubric.GetUid());
+            SaveThisUserOnDB();
+            rubric.SaveRubricOnDB();
         }
 
     }

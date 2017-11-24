@@ -10,9 +10,9 @@
                 <Entry x:Name="entryEmail" Placeholder="Email"></Entry>
                 <Entry x:Name="entryPassword" IsPassword="True" Placeholder="Contraseña"></Entry>
                 <Entry x:Name="entryConfirmPassword" IsPassword="True" Placeholder="Confirme la contraseña"></Entry>
-                <Button Text="Registrarse" Clicked="Register"></Button>
+                <Button Text="Registrarse" BackgroundColor="#D32F2F" TextColor="White" Clicked="Register"></Button>
             </StackLayout>
-            <ActivityIndicator x:Name="loadIndicator" VerticalOptions="CenterAndExpand" Color="DodgerBlue"></ActivityIndicator>
+            <ActivityIndicator x:Name="loadIndicator" VerticalOptions="CenterAndExpand"></ActivityIndicator>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

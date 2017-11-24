@@ -231,6 +231,12 @@ namespace PF_Xamarin_PM
         }
 
 
+        public async void SaveRubricOnDB()
+        {
+            await FirebaseHelper.SaveRubricOnDB(this);
+        }
+
+
         public class RubricCategory
         {
             public string Name { get; private set; }

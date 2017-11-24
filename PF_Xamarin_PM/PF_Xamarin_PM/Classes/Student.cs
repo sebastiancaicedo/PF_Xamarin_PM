@@ -52,7 +52,7 @@ namespace PF_Xamarin_PM
                 if (newStudent)
                 {
                     SubjectsInfo.Add(subjectToAdd);
-                    await FirebaseHelper.firebaseDBClient
+                    await FirebaseHelper.FirebaseDBClient
                     .Child("students")//tabla estudiantes
                     .Child(authId)//se usa el id creado por la autenticacion como key tambien
                             //.WithAuth(token)

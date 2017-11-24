@@ -1,38 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Firebase.Xamarin.Database;
-using Firebase.Xamarin.Database.Query;
 
 namespace PF_Xamarin_PM
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class HomePage : MasterDetailPage
 	{
+        private IList<MenuItem> MenuItems { get; set; } = new ObservableCollection<MenuItem>();
+
+        MenuItem mySubjectsPageItem = new MenuItem { IconSource = "ic_custom_asignaturas.png", Title = "Mis Asignaturas", Page = new MySubjectsPage() };
+        MenuItem myRubricsPageItem = new MenuItem { IconSource = "ic_custom_rubricas.png", Title = "Mis Rubricas", Page = new MyRubricsPage() };
+
 		public HomePage ()
 		{
-            //ellabel.Text = LoginPage.auth.User.FederatedId;
-			InitializeComponent ();
+            InitializeComponent();
+            BindingContext = LoginPage.LoggedUser;
+            MenuItems.Add(mySubjectsPageItem);
+            MenuItems.Add(myRubricsPageItem);
+            listviewMenuItems.ItemsSource = this.MenuItems;
             Detail = new NavigationPage(new MySubjectsPage());
             IsPresented = false;
 		}
-            
 
-        public void ShowMySubjects(object sender, EventArgs e)
+        public void ItemMenuTapped(object sender, ItemTappedEventArgs e)
         {
-            Detail = new NavigationPage(new MySubjectsPage());
+            MenuItem menuItem = e.Item as MenuItem;
+            Detail = new NavigationPage(menuItem.Page);
             IsPresented = false;
+            (sender as ListView).SelectedItem = null;
         }
 
-        public void ShowMyRubrics(object sender, EventArgs e)
-        {
-            Detail = new NavigationPage(new MyRubricsPage());
-            IsPresented = false;
-        }
-	}
+    }
 }

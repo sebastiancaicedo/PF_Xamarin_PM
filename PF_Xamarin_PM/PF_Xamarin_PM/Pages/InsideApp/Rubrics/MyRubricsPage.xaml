@@ -3,15 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PF_Xamarin_PM.MyRubricsPage">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="+" Clicked="CreateNewRubric"></ToolbarItem>
+        <ToolbarItem Icon="ic_custom_agregar.png" Clicked="CreateNewRubric"></ToolbarItem>
     </ContentPage.ToolbarItems>
     
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical" Padding="15">
-            <ListView ItemsSource="{Binding}" ItemTapped="ShowRubricInfo">
+        <StackLayout Orientation="Vertical" Margin="15">
+            <ListView x:Name="listviewRubrics"  ItemTapped="ShowRubricInfo"
+                      HasUnevenRows="True"
+                      IsPullToRefreshEnabled="True"
+                      IsRefreshing="{Binding IsRefreshing}"
+                      RefreshCommand="{Binding RefreshCommand}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextCell Text="{Binding Name}"></TextCell>
+                        <ViewCell Height="70">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                                <Image Source="ic_custom_rubricas.png" VerticalOptions="CenterAndExpand"></Image>
+                                <Label Text="{Binding Name}" TextColor="Red" FontSize="Large"
+                                       Margin="15,0,0,0" VerticalTextAlignment="Center"
+                                       VerticalOptions="CenterAndExpand" HorizontalOptions="StartAndExpand"></Label>
+                            </StackLayout>
+                        </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

@@ -9,11 +9,11 @@
             <StackLayout x:Name="layoutTop" Orientation="Vertical" VerticalOptions="StartAndExpand">
                 <Entry x:Name="entryEmail" Placeholder="example@uninorte.edu.co"></Entry>
                 <Entry x:Name="entryPassword" Placeholder="Contraseña" IsPassword="True"></Entry>
-                <Button Text="Sign In" Clicked="LogIn"></Button>
+                <Button Text="Sign In" BackgroundColor="#D32F2F" TextColor="White" Clicked="LogIn"></Button>
             </StackLayout>
-            <ActivityIndicator x:Name="loadIndicator" VerticalOptions="CenterAndExpand" Color="DodgerBlue"></ActivityIndicator>
+            <ActivityIndicator x:Name="loadIndicator" VerticalOptions="CenterAndExpand"></ActivityIndicator>
             <StackLayout x:Name="layoutBottom" Orientation="Vertical" VerticalOptions="EndAndExpand">
-                <Button Text="¿No tiene Cuenta?. Registrarse aquí" Clicked="ShowRegisterPage"></Button>
+                <Button Text="¿No tiene Cuenta? Registrarse aquí" BackgroundColor="#D32F2F" TextColor="White" Clicked="ShowRegisterPage"></Button>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

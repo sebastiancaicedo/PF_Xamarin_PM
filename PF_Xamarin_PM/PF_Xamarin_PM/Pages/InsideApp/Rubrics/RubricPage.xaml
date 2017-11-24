@@ -3,12 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PF_Xamarin_PM.RubricPage">
 
-    <ContentPage Title="Informacion Básica">
+    <ContentPage Title="Informacion Básica" Icon="ic_custom_informacion.png">
         <ContentPage.Content>
             <StackLayout Orientation="Vertical" Margin="15">
                 <StackLayout.Children>
                     <Label Text="Nombre de la Rubrica"></Label>
-                    <Label Text="{Binding Name}" FontSize="Medium"></Label>
+                    <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="Medium"></Label>
                     <Label Text="Rango de Notas"></Label>
                     <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                         <Label Text="{Binding MinScore}" HorizontalOptions="FillAndExpand" HorizontalTextAlignment="Center"></Label>
@@ -20,7 +20,7 @@
         </ContentPage.Content>
     </ContentPage>
 
-    <ContentPage Title="Estructura">
+    <ContentPage Title="Estructura" Icon="ic_custom_rubricas.png">
         <ContentPage.Content>
             <ScrollView Orientation="Vertical">
                 <StackLayout x:Name="layoutMain" Margin="15" Orientation="Vertical" VerticalOptions="FillAndExpand">

@@ -40,7 +40,7 @@ namespace PF_Xamarin_PM
                 RegisterPage.ReturnData data = e.Data;
                 try
                 {
-                    Auth = await FirebaseHelper.authProvider.CreateUserWithEmailAndPasswordAsync(data.ProfessorInfo.Email, data.Password);
+                    Auth = await FirebaseHelper.AuthProvider.CreateUserWithEmailAndPasswordAsync(data.ProfessorInfo.Email, data.Password);
                     //guardamos el usuario en la base de datos
                     data.ProfessorInfo.SaveThisUserOnDB();
                     LoggedUser = data.ProfessorInfo;
@@ -71,7 +71,7 @@ namespace PF_Xamarin_PM
             {
                 try
                 {
-                    Auth = await FirebaseHelper.authProvider.SignInWithEmailAndPasswordAsync(entryEmail.Text, entryPassword.Text);
+                    Auth = await FirebaseHelper.AuthProvider.SignInWithEmailAndPasswordAsync(entryEmail.Text, entryPassword.Text);
                     LoggedUser = await FirebaseHelper.GetProfessorById(Auth.User.LocalId);
                     if (LoggedUser == null)
                     {

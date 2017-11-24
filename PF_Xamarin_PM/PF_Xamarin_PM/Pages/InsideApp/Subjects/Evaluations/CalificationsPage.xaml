@@ -4,11 +4,12 @@
              x:Class="PF_Xamarin_PM.CalificationsPage">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Editar" Clicked="EditEvaluation"></ToolbarItem>
+        <ToolbarItem Icon="ic_custom_editar.png" Clicked="EditEvaluation"></ToolbarItem>
     </ContentPage.ToolbarItems>
     
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical" Padding="15">
+        <StackLayout Orientation="Vertical" Margin="15">
+            <Label Text="Calificaciones" FontSize="Large" TextColor="Red" Margin="0,0,0,15"></Label>
             <ListView x:Name="listviewCalifications" HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>

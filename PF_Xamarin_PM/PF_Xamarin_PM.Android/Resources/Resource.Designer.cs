@@ -2057,7 +2057,7 @@ namespace PF_Xamarin_PM.Droid
 			public const int ic_custom_asignaturas = 2130837616;
 			
 			// aapt resource value: 0x7f020071
-			public const int ic_custom_default = 2130837617;
+			public const int ic_custom_editar = 2130837617;
 			
 			// aapt resource value: 0x7f020072
 			public const int ic_custom_estudiante = 2130837618;
@@ -2069,10 +2069,10 @@ namespace PF_Xamarin_PM.Droid
 			public const int ic_custom_guardar = 2130837620;
 			
 			// aapt resource value: 0x7f020075
-			public const int ic_custom_rubricas = 2130837621;
+			public const int ic_custom_informacion = 2130837621;
 			
 			// aapt resource value: 0x7f020076
-			public const int ic_custom_signout = 2130837622;
+			public const int ic_custom_rubricas = 2130837622;
 			
 			// aapt resource value: 0x7f020077
 			public const int ic_expand = 2130837623;

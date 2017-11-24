@@ -13,10 +13,10 @@ namespace PF_Xamarin_PM
     {
         //Auth Config Parameters
         public const string APP_API_KEY = "AIzaSyCV8rNgC4yWFirF911_lOgE9vUjlzmLlC0";
-        public static FirebaseAuthProvider authProvider { get; } = new FirebaseAuthProvider(new FirebaseConfig(APP_API_KEY));
+        public static FirebaseAuthProvider AuthProvider { get; } = new FirebaseAuthProvider(new FirebaseConfig(APP_API_KEY));
 
         //DB Parameters
-        public static FirebaseClient firebaseDBClient { get; } = new FirebaseClient("https://proyectofinal-xamarin.firebaseio.com/");
+        public static FirebaseClient FirebaseDBClient { get; } = new FirebaseClient("https://proyectofinal-xamarin.firebaseio.com/");
 
         /// <summary>
         /// Devuelve un id nuevo y unico
@@ -34,7 +34,7 @@ namespace PF_Xamarin_PM
         /// <returns></returns>
         public static async Task<Rubric> GetRubricById(string rubrickey)
         {
-            var rubric = await firebaseDBClient
+            var rubric = await FirebaseDBClient
                     .Child("rubrics")
                     .Child(rubrickey)
                     .OnceSingleAsync<Rubric>();
@@ -51,7 +51,7 @@ namespace PF_Xamarin_PM
         /// <returns></returns>
         public static async Task<Professor> GetProfessorById(string professorId)
         {
-            var professor = await firebaseDBClient
+            var professor = await FirebaseDBClient
                     .Child("professors")
                     .Child(professorId)
                     .OnceSingleAsync<Professor>();
@@ -65,7 +65,7 @@ namespace PF_Xamarin_PM
         /// <param name="professor"></param>
         public static async Task SaveProfessorOnDB(Professor professor)
         {
-            await firebaseDBClient
+            await FirebaseDBClient
                 .Child("professors")//tabla profesores
                 .Child(LoginPage.Auth.User.LocalId)//se usa el id creado por la autenticacion como key tambien
                 .PutAsync(professor);
@@ -83,7 +83,7 @@ namespace PF_Xamarin_PM
             {
                 foreach (var subjectKey in subjectsKeys)
                 {
-                    Subject subject = await firebaseDBClient
+                    Subject subject = await FirebaseDBClient
                         .Child("subjects")
                         .Child(subjectKey)
                         .OnceSingleAsync<Subject>();
@@ -99,7 +99,7 @@ namespace PF_Xamarin_PM
 
         public static async Task SaveSubjectOnDB(Subject subject)
         {
-            await firebaseDBClient
+            await FirebaseDBClient
                 .Child("subjects")
                 .Child(subject.GetUId())
                 .PutAsync(subject);
@@ -112,7 +112,7 @@ namespace PF_Xamarin_PM
             {
                 foreach (var studentKey in studentsKeys)
                 {
-                    var student = await firebaseDBClient
+                    var student = await FirebaseDBClient
                         .Child("students")
                         .Child(studentKey)
                         .OnceSingleAsync<Student>();
@@ -132,7 +132,7 @@ namespace PF_Xamarin_PM
             {
                 foreach (var evaluationKey in evaluationsKeys)
                 {
-                    var evaluation = await firebaseDBClient
+                    var evaluation = await FirebaseDBClient
                         .Child("evaluations")
                         .Child(evaluationKey)
                         .OnceSingleAsync<Evaluation>();
@@ -147,7 +147,7 @@ namespace PF_Xamarin_PM
 
         public static async Task SaveStudentOnDB(Student student)
         {
-            await firebaseDBClient
+            await FirebaseDBClient
                 .Child("students")
                 .Child(student.GetKey())
                 .PutAsync(student);
@@ -155,7 +155,7 @@ namespace PF_Xamarin_PM
 
         public static async Task<Subject> GetSubjectById(string subjectKey)
         {
-            Subject subject = await firebaseDBClient
+            Subject subject = await FirebaseDBClient
                 .Child("subjects")
                 .Child(subjectKey)
                 .OnceSingleAsync<Subject>();
@@ -167,7 +167,7 @@ namespace PF_Xamarin_PM
 
         public static async Task<Student> GetStudentById(string studentKey)
         {
-            Student student = await firebaseDBClient
+            Student student = await FirebaseDBClient
                 .Child("students")
                 .Child(studentKey)
                 .OnceSingleAsync<Student>();
@@ -175,6 +175,42 @@ namespace PF_Xamarin_PM
             student.SetKey(studentKey);
 
             return student;
+        }
+
+        public static async Task<IList<Rubric>> GetRubricsByIds(List<string> rubricsKeys)
+        {
+            IList<Rubric> list = new ObservableCollection<Rubric>();
+            if (rubricsKeys.Count > 0)
+            {
+                foreach (var rubricKey in rubricsKeys)
+                {
+                    var rubric = await FirebaseDBClient
+                        .Child("rubrics")
+                        .Child(rubricKey)
+                        .OnceSingleAsync<Rubric>();
+
+                    rubric.SetUid(rubricKey);
+
+                    list.Add(rubric);
+                }
+            }
+            return list;
+        }
+
+        public static async Task SaveRubricOnDB(Rubric rubric)
+        {
+            await FirebaseDBClient
+                .Child("rubrics")
+                .Child(rubric.GetUid())
+                .PutAsync<Rubric>(rubric);
+        }
+
+        public static async Task SaveEvaluationOnDB(Evaluation evaluation)
+        {
+            await FirebaseDBClient
+                .Child("evaluations")
+                .Child(evaluation.GetUid())
+                .PutAsync<Evaluation>(evaluation);
         }
     }
 }

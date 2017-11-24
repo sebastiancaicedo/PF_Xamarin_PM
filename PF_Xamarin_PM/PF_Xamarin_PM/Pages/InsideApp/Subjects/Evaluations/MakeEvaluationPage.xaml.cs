@@ -14,32 +14,37 @@ namespace PF_Xamarin_PM
 	{
         public event EventHandler<ReturnInfo<Evaluation>> FinishActivity;
 
-        private Subject subject;
-        private string subjectKey;
-        private IList<Student> students;
+        private Subject Subject { get; set; }
+        //private string subjectKey;
+        private IList<Student> Students { get; set; }
         private List<Rubric> Rubrics = new List<Rubric>();
+        private bool appeared = false;
 
         public MakeEvaluationPage (Subject subject, IList<Student> students)
 		{
-            Title = "New Evaluation";
-            this.subject = subject;
-            this.students = students;
-            subjectKey = subject.GetUId();
+            Title = "Nueva Evaluación";
+            this.Subject = subject;
+            this.Students = students;
+            //subjectKey = subject.GetUId();
             InitializeComponent ();
 		}
 
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            await getRubrics();
+            if (!appeared)
+            {
+                await getRubrics();
+                appeared = true;
+            }
             
         }
 
-        private async Task<bool> getRubrics()
+        private async Task getRubrics()
         {
             try
             {
-                var rubrics = await FirebaseHelper.firebaseDBClient
+                var rubrics = await FirebaseHelper.FirebaseDBClient
                     .Child("rubrics")
                     .OnceAsync<Rubric>();
 
@@ -53,10 +58,9 @@ namespace PF_Xamarin_PM
             }
             catch (Exception ex)
             {
-
-                throw ex;
+                await DisplayAlert("Error", "Problema al traer las trubricas, : "+ex, "OK");
+                //throw ex;
             }
-            return true;
         }
 
         public void StartEvaluating(object sender, EventArgs e)
@@ -65,22 +69,30 @@ namespace PF_Xamarin_PM
             int rubricIndex = pickerRubrics.SelectedIndex;
             if (!String.IsNullOrEmpty(name) && rubricIndex > -1)
             {
-                Evaluation evaluation = new Evaluation(name, subjectKey, Rubrics[rubricIndex].GetUid());
-                subject.EvaluationsKeys.Add(evaluation.GetUid());
+                Evaluation evaluation = new Evaluation(name, Subject.GetUId(), Rubrics[rubricIndex].GetUid());
+                Subject.EvaluationsKeys.Add(evaluation.GetUid());
                 evaluation.EvaluationSaved += OnEvaluationSaved;
-                EvaluationPage page = new EvaluationPage(evaluation, Rubrics[rubricIndex], students);
+                EvaluationPage page = new EvaluationPage(evaluation, Rubrics[rubricIndex], Students);
                 page.FinishActivity += OnFinishEvaluation;
                 Navigation.PushModalAsync(new NavigationPage(page));
             }
             else
             {
-                DisplayAlert("Error", "All fields must be full", "OK");
+                DisplayAlert("Error", "Todos los campos debes ser completados", "OK");
             }
         }
 
         private void OnEvaluationSaved(object sender, EventArgs e)
         {
-            subject.SaveSubjectOnDB();
+            try
+            {
+                Subject.SaveSubjectOnDB();
+            }
+            catch (Exception ex)
+            {
+                DisplayAlert("Error", "Problema al guardar la evaluacion, : " + ex, "OK");
+                //throw;
+            }
         }
 
         private void OnFinishEvaluation(object sender, ReturnInfo<Evaluation> e)
