@@ -75,9 +75,9 @@ namespace PF_Xamarin_PM
                     {
                         rubricToCreate.MinScore = minScore;
                         rubricToCreate.MaxScore = maxScore;
-                        string error;
-                        if (rubricToCreate.CanBeSaved(out error))
-                        {
+                        //string error;
+                        //if (rubricToCreate.CanBeSaved(out error))
+                        //{
                             try
                             {
                                 rubricToCreate.Name = rubricName;
@@ -91,11 +91,11 @@ namespace PF_Xamarin_PM
                                 await DisplayAlert("Error", "Problema al agregar la asignatura, : " + ex, "OK");
                                 //throw;
                             }
-                        }
-                        else
-                        {
-                            await DisplayAlert("Error", error, "OK");
-                        }
+                        //}
+                        //else
+                        //{
+                          //  await DisplayAlert("Error", error, "OK");
+                        //}
                     }
                     else
                     {
